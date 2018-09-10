@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,16 +10,18 @@ namespace IqaController.entity
 {
     class FileProcess
     {
+        private string measuDate = "";              // Zip파일 측정일 정보 Upload_date에 해당 값 넣는다.
         private string filePos = "";                // 파일
         private string processServer = "";          // 처리서버
         private string measuGroup = "";             // 측정조
         private string measuBranch = "";            // 측정본부
-        private string zipFileName = "";            // zip 파일 이름
+        private string zipFileName = "";            // zip 파일 작업가공 이름
+        private string orgZipFileName = "";         // zip 파일 이름 원본이름
+        private string workZipFileName = "";        // 임시 작업성 zip파일 명
         private string inoutType = "";
         private string comp = "";
+        private string serviceType = "";            //서비스 타입
 
-
-        private string workZipFileName = "";        // 물리적zip 파일이름    
         // private string fileName = "";            // 파일 이름
         private string fileNameRule = "";           // 파일명 규칙
         private string fileNameFlag = "";           // 파일명 규칙 에러 플래그
@@ -29,7 +33,7 @@ namespace IqaController.entity
         private string backupFlag = "";             // 백업
         private string zipDupFlag = "";             // zip파일 중복
 
-        private Boolean pass = true;                // 해당파일 패스할지 여부
+        private Boolean pass = false;                // 해당파일 패스할지 여부
         private Boolean complete = false;           // 전체 성고 여부
         private string fileSize = "";               //파일 사이즈
         private string unzipfileCnt = "";
@@ -43,7 +47,9 @@ namespace IqaController.entity
         private int ftpSendSuccessCnt = 0;
         private int ftpSendFileCnt = 0;
 
-        private List<QmsFileInfo> qmsFileList = new List<QmsFileInfo>();
+        
+
+        //private List<QmsFileInfo> qmsFileList = new List<QmsFileInfo>();
         private List<ZipFileDetailEntity> zipfileDetailList = new List<ZipFileDetailEntity>();
 
 
@@ -68,8 +74,7 @@ namespace IqaController.entity
         public string ParsingCompleteCnt { get => parsingCompleteCnt; set => parsingCompleteCnt = value; }
         public string CurState { get => curState; set => curState = value; }
         public string ZipfileFullPath { get => zipfileFullPath; set => zipfileFullPath = value; }
-        public string FileNameFlag { get => fileNameFlag; set => fileNameFlag = value; }
-        public string WorkZipFileName { get => workZipFileName; set => workZipFileName = value; }
+        public string FileNameFlag { get => fileNameFlag; set => fileNameFlag = value; }        
         public string FtpSendServer { get => ftpSendServer; set => ftpSendServer = value; }
         public string FlagFtpSend { get => flagFtpSend; set => flagFtpSend = value; }
         public int FtpSendSuccessCnt { get => ftpSendSuccessCnt; set => ftpSendSuccessCnt = value; }
@@ -78,7 +83,12 @@ namespace IqaController.entity
         public string FtpSuccessFlag { get => ftpSuccessFlag; set => ftpSuccessFlag = value; }
         public string InoutType { get => inoutType; set => inoutType = value; }
         public string Comp { get => comp; set => comp = value; }
-        internal List<QmsFileInfo> QmsFileList { get => qmsFileList; set => qmsFileList = value; }
+        public string OrgZipFileName { get => orgZipFileName; set => orgZipFileName = value; }
+        public string WorkZipFileName { get => workZipFileName; set => workZipFileName = value; }
+        public string MeasuDate { get => measuDate; set => measuDate = value; }
+        public string ServiceType { get => serviceType; set => serviceType = value; }
+
+        //internal List<QmsFileInfo> QmsFileList { get => qmsFileList; set => qmsFileList = value; }
         internal List<ZipFileDetailEntity> ZipfileDetailList { get => zipfileDetailList; set => zipfileDetailList = value; }
 
 
@@ -104,11 +114,57 @@ namespace IqaController.entity
                         break;
                     }
                 }
+                else if (flag == "onlyUnzipNm")
+                {
+                    if (Path.GetFileNameWithoutExtension(detail.UnzipfileNm)  == key)
+                    {
+                        find = detail;
+                        break;
+                    }
+                }
 
             }
             return find;
         }
 
+        public Dictionary<string, Object> getDomain(Boolean bDetail)
+        {
+            Dictionary<string, Object> domain = new Dictionary<string, object>();
+
+            Dictionary<string, Object> domainZM = new Dictionary<string, object>();     //ZipFileMain
+
+            domainZM.Add("zipfileNm", HttpUtility.UrlEncode(this.zipFileName));
+            domainZM.Add("measuBranch", HttpUtility.UrlEncode(this.measuBranch));
+            domainZM.Add("measuGroup", HttpUtility.UrlEncode(this.measuGroup));
+
+            domainZM.Add("inoutType", this.inoutType);
+            domainZM.Add("comp", this.Comp);
+            domainZM.Add("zipfileSize", this.fileSize);
+            domainZM.Add("procServer", this.processServer);
+            domainZM.Add("ftpServer", this.ftpSendServer);
+            domainZM.Add("unzipfileCnt", this.unzipfileCnt);
+            domainZM.Add("dupfileCnt", this.dupfileCnt);
+            domainZM.Add("completefileCnt", this.completefileCnt);
+            domainZM.Add("parsingCompleteCnt", this.parsingCompleteCnt);
+            domainZM.Add("curState", this.curState);
+
+            domain.Add("zipfileMain", domainZM);
+
+            if (zipfileDetailList.Count > 0 && bDetail)
+            {
+                List <Dictionary<string, Object>> lstDomain = new List<Dictionary<string, object>>();
+
+                foreach (ZipFileDetailEntity zd in this.zipfileDetailList)
+                {
+                    Dictionary<string, Object> domainPart = zd.getDomain();
+                    lstDomain.Add(domainPart);                    
+                }
+
+                domain.Add("zipfileDetailList", lstDomain);
+            }
+            
+            return domain;            
+        }
 
     }
 }

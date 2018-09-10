@@ -34,7 +34,10 @@ namespace IqaController.entity
         public const string con_DIR_CONVERT = "CONVERT_ERROR";
         public const string con_DIR_BACK = "BACK";
 
-
+        public const string con_STATE_START_NAMING = "S_NM";   //네이밍 시작
+        public const string con_STATE_START_UNZIP = "S_UZ";    //UNZIP 시작
+        public const string con_STATE_START_CONV = "S_CONV";   //CONVERTOR 시작
+        public const string con_STATE_START_FTP = "S_FTP";     //FTP 완료  //의미 있나 바로 모두 완료 될텐데
 
 
         public const string con_STATE_WAIT = "WAIT";
@@ -49,6 +52,8 @@ namespace IqaController.entity
         public const string con_STATE_ERR_UNZIP = "E_UZ";       
         public const string con_STATE_ERR_DUP_DRM = "E_DD";     //DRP 중복
         public const string con_STATE_ERR_DUP_ZIP = "E_DZ";     //ZIP파일 중복
+
+        public const string con_STATE_ERR_DUP_ALL = "E_DD_ALL"; //DRM 모든파일 중복 DRM
 
 
         public const string con_FOLDER_UPLOAD_ERROR = "UPLOAD_ERROR";

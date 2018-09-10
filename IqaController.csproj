@@ -63,7 +63,7 @@
     <Compile Include="entity\ConvertorResult.cs" />
     <Compile Include="entity\Define.cs" />
     <Compile Include="entity\FileProcess.cs" />
-    <Compile Include="entity\QmsFileInfo.cs" />
+    <Compile Include="entity\SendFileInfo.cs" />
     <Compile Include="entity\SaveResultInfo.cs" />
     <Compile Include="entity\ZipFileDetailEntity.cs" />
     <Compile Include="frmMain.cs">

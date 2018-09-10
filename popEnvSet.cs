@@ -41,7 +41,7 @@ namespace IqaController
 
             NameValueCollection postData = new NameValueCollection();
 
-            string uri = Define.CON_WEB_SERVICE + "comCtrl/getControllerServer.do";
+            string uri = Define.CON_WEB_SERVICE + "manage/getControllerServer.do";
             WebClient webClient = new WebClient();
             string pagesource = Encoding.UTF8.GetString(webClient.UploadValues(uri, postData));
             try
@@ -59,7 +59,7 @@ namespace IqaController
 
             NameValueCollection postData = new NameValueCollection();
             
-            string uri = Define.CON_WEB_SERVICE + "comCtrl/getControllerFilePeriod.do";
+            string uri = Define.CON_WEB_SERVICE + "manage/getControllerFilePeriod.do";
             WebClient webClient = new WebClient();
             string pagesource = Encoding.UTF8.GetString(webClient.UploadValues(uri, postData));
             try
@@ -152,7 +152,7 @@ namespace IqaController
                 return;
             }
 
-            string uri = Define.CON_WEB_SERVICE + "comCtrl/saveContollerServerSet.do";
+            string uri = Define.CON_WEB_SERVICE + "manage/saveContollerServerSet.do";
 
             WebClient webClient = new WebClient();
             
@@ -166,7 +166,7 @@ namespace IqaController
             try
             {
                 SaveResultInfo result = (SaveResultInfo)Newtonsoft.Json.JsonConvert.DeserializeObject(pagesource, typeof(SaveResultInfo));
-                if (result.Flag == "1")
+                if (result.Flag == 1)
                 {
                     //다시 조회한다.
                     dbControlsetServer();
@@ -210,7 +210,7 @@ namespace IqaController
                 return;
             }
 
-            string uri = Define.CON_WEB_SERVICE + "comCtrl/saveContollerFileSet.do";
+            string uri = Define.CON_WEB_SERVICE + "manage/saveContollerFileSet.do";
 
             WebClient webClient = new WebClient();
             
@@ -223,7 +223,7 @@ namespace IqaController
             try
             {
                 SaveResultInfo result = (SaveResultInfo)Newtonsoft.Json.JsonConvert.DeserializeObject(pagesource, typeof(SaveResultInfo));
-                if (result.Flag == "1")
+                if (result.Flag == 1)
                 {
                     //다시 조회한다.
                     dbControlsetFile();

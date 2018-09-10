@@ -40,7 +40,7 @@ namespace IqaController
             }
             m_zipfileInfo.WorkZipFileName = txtFileNameA.Text;
 
-            File.Move(m_zipfileInfo.ZipfileFullPath + "\\" + m_zipfileInfo.WorkZipFileName, m_zipfileInfo.ZipfileFullPath + "\\" + m_zipfileInfo.WorkZipFileName);
+            File.Move(m_zipfileInfo.ZipfileFullPath + "\\" + m_zipfileInfo.ZipFileName, m_zipfileInfo.ZipfileFullPath + "\\" + m_zipfileInfo.WorkZipFileName);
             MessageBox.Show("변경되었습니다.");
             
         }
@@ -53,7 +53,7 @@ namespace IqaController
                 return;
             }
             
-            File.Move(m_zipfileInfo.ZipfileFullPath + "\\" + m_zipfileInfo.WorkZipFileName, txtFilePathA.Text + "\\" + m_zipfileInfo.WorkZipFileName);
+            File.Move(m_zipfileInfo.ZipfileFullPath + "\\" + m_zipfileInfo.ZipFileName, txtFilePathA.Text + "\\" + m_zipfileInfo.WorkZipFileName);
             m_zipfileInfo.ZipfileFullPath = txtFilePathA.Text;
             MessageBox.Show("이동하였습니다.");
 

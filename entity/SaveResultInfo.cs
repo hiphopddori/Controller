@@ -8,10 +8,11 @@ namespace IqaController.entity
 {
     class SaveResultInfo
     {
-        private string flag = "";
+        private int flag = 1;
         private string desc = "";
 
-        public string Flag { get => flag; set => flag = value; }
+        
         public string Desc { get => desc; set => desc = value; }
+        public int Flag { get => flag; set => flag = value; }
     }
 }

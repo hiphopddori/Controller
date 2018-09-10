@@ -228,6 +228,7 @@
             this.Name = "frmMain";
             this.Text = "IOA 컨트롤러";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmMain_FormClosed);
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.tabMain.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
