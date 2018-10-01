@@ -23,6 +23,8 @@ namespace IqaController
         private Stream ftpStream = null;
         private int bufferSize = 2048;
 
+
+
         /* Construct Object */
         public Ftp(string hostIP, string userName, string password) { host = hostIP; user = userName; pass = password; }
 
