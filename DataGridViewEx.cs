@@ -59,7 +59,7 @@ namespace IqaController
 
         public int getFindZipFile2RowIndex(string zipFileNm, int nCol)
         {
-            int nRow = 0;
+            int nRow = -1;
             foreach (DataGridViewRow r in this.Rows)
             {
                 string tmpZipFileName = (string)((DataGridViewTextBoxCell)r.Cells[nCol]).Value;

@@ -110,19 +110,22 @@ namespace IqaController.service
             string uri = Define.CON_WEB_SERVICE + "manage/insertZipFileInfo.do";
             Dictionary<string, Object> domain = row.getDomain(false);
 
-            if (flag == Define.con_ING_START)
+            if (flag == Define.con_STATE_START_NAMING)                      
             {
                 domain.Add("startTime", "1");                             //처리 시작시간
             }
-            else if (flag == Define.con_ING_UNZIP)
+            else if (flag == Define.con_STATE_START_UNZIP)
             {
                 domain.Add("unzipStartTime", "1");                        //UnZip 시작 시점 업데이트
             }
-            else if (flag == Define.con_ING_FTPUPLOAD)
+            else if (flag == Define.con_STATE_START_FTP)
             {
                 domain.Add("uploadStartTime", "1");                       //업로드 시작 시점 업데이트 - 화면설계상 없어서 사용안함
             }
-
+            else if (flag == Define.con_STATE_START_CONV)
+            {
+                domain.Add("convStartTime", "1");                       //업로드 시작 시점 업데이트 - 화면설계상 없어서 사용안함
+            }
 
             String result = iqaService.sendService(domain, uri);
             SaveResultInfo res = null;

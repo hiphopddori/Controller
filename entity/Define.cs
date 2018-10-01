@@ -20,9 +20,10 @@ namespace IqaController.entity
         public const string CON_ERROR = "Error";
 
         //진행단계
-        public const string con_ING_START = "START";
-        public const string con_ING_UNZIP = "UNZIP";
-        public const string con_ING_FTPUPLOAD = "FTPUPLOAD";
+        //public const string con_ING_START = "START";
+        //public const string con_ING_UNZIP = "UNZIP";
+        //public const string con_ING_FTPUPLOAD = "FTPUPLOAD";
+        //public const string con_ING_CONV = "CONV";
 
 
 
@@ -49,7 +50,8 @@ namespace IqaController.entity
         public const string con_STATE_COMPLETE_FTP = "FTP";   //FTP 완료  //의미 있나 바로 모두 완료 될텐데
 
         public const string con_STATE_ERR_NAMING = "E_NM";
-        public const string con_STATE_ERR_UNZIP = "E_UZ";       
+        public const string con_STATE_ERR_UNZIP = "E_UZ";
+        public const string con_STATE_ERR_CONV = "E_CONV";
         public const string con_STATE_ERR_DUP_DRM = "E_DD";     //DRP 중복
         public const string con_STATE_ERR_DUP_ZIP = "E_DZ";     //ZIP파일 중복
 
@@ -61,6 +63,10 @@ namespace IqaController.entity
 
         public const string con_SUCCESS = "1";
         public const string con_FAIL = "0";
+
+        public const int con_KEY_PROCESS_COLIDX = 10;
+        public const int con_KEY_PROCESSLOG_COLIDX = 5;
+        public const int con_KEY_PROCESSERROR_COLIDX = 6;
 
     }
 }

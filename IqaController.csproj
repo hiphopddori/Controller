@@ -87,7 +87,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="service\iqaService.cs" />
-    <Compile Include="util.cs" />
+    <Compile Include="util\Ftp.cs" />
+    <Compile Include="util\util.cs" />
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
