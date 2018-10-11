@@ -40,6 +40,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -56,12 +58,15 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="entity\CodeNameEntity.cs" />
+    <Compile Include="entity\CommonResultEntity.cs" />
     <Compile Include="entity\ControllerEnvEntity.cs" />
     <Compile Include="entity\ControllerFileKeepEntity.cs" />
     <Compile Include="entity\ControllerServerEntity.cs" />
     <Compile Include="entity\ControllerSetInfo.cs" />
     <Compile Include="entity\ConvertorResult.cs" />
     <Compile Include="entity\Define.cs" />
+    <Compile Include="entity\EventOriFileEntity.cs" />
+    <Compile Include="entity\EventOriFileProcResult.cs" />
     <Compile Include="entity\FileProcess.cs" />
     <Compile Include="entity\SendFileInfo.cs" />
     <Compile Include="entity\SaveResultInfo.cs" />

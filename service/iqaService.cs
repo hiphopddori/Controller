@@ -6,14 +6,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Web;
-using System.IO; 
+using System.IO;
+using System.Threading;
 using IqaController.entity;
 
 namespace IqaController.service
 {
     static class iqaService
     {
-        public  static string sendService(Dictionary<string, Object> param,string url)
+
+        /* 서비스 공통 
+        */
+        public static string serviceCall(Dictionary<string, Object> param, string url)
         {
             string result;
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
@@ -32,53 +36,66 @@ namespace IqaController.service
                 {
                     result = streamReader.ReadToEnd();
                 }
+
+                return result;
+            }
+            catch (WebException ex)
+            {                
+                Boolean bConnectFail = false;
+                var status = ex.Status;
+                if (status != null)
+                {
+                    //원격서버 죽어있음(배포중) - 재기동까지 대기 모드?
+                    if (status == WebExceptionStatus.ConnectFailure)
+                    {
+                        bConnectFail = true;
+                    }
+                }
+
+                if (bConnectFail)
+                {
+                    //재호출 한다.
+                    return "ConectFail";
+                }
+                else
+                {
+                    string errDesc = ex.Message.ToString();
+                    util.Log("sendService : error url = ", url);
+                    util.Log("sendService : error desc = ", errDesc);
+                    Console.WriteLine(errDesc);
+
+                    return "NOK::" + ex.Message.ToString();
+                }
             }
             catch (Exception ex)
-            {                
-                util.Log("sendService : url : ", url);
-                util.Log("sendService : error", ex.Message.ToString());
-                Console.WriteLine(ex.Message.ToString());
-                return "NOK";
+            {
+                string errDesc = ex.Message.ToString();
+                util.Log("sendService : error url = ", url);
+                util.Log("sendService : error desc = ", errDesc);
+                Console.WriteLine(errDesc);
+                return "NOK::" + ex.Message.ToString();
             }
-
-            return result; 
         }
-        /* 컨버터 실행 결과 업데이트
-        
-        public static SaveResultInfo setUpdateConvetorResult(FileProcess row)
+
+        public  static string sendService(Dictionary<string, Object> param,string url)
         {
-            SaveResultInfo res = null;
-            string uri = Define.CON_WEB_SERVICE + "manage/setUpdateConvetorResult2.do";
-
-            Dictionary<string, Object> domain = new Dictionary<string, object>();
-            List<Dictionary<string, Object>> lstDomain = new List<Dictionary<string, Object>>();
-            foreach (ZipFileDetailEntity zipfileDetail in row.ZipfileDetailList)
+            //톰캣 배포시 끊기는 현상떄문에 오류 막기위해 재전송처리
+            string result = "start";
+            while (result == "ConectFail" || result =="start")
             {
-                Dictionary<string, Object> domainPart = zipfileDetail.getDomain(); ;
-                lstDomain.Add(domainPart);
-            }
-            
-            domain.Add("zipfileNm", HttpUtility.UrlEncode(row.ZipFileName));
-            domain.Add("curState", row.CurState);
-            domain.Add("zipfileDetailList", lstDomain);
+                result = iqaService.serviceCall(param, url);
 
-            String result = iqaService.sendService(domain, uri);
-
-            if (result != "NOK")
-            {
-                res = (SaveResultInfo)Newtonsoft.Json.JsonConvert.DeserializeObject(result, typeof(SaveResultInfo));
+                if (result == "ConectFail")
+                {
+                    util.Log("sendService : error url = ", url);
+                    util.Log("sendService : error desc = ", "ConnectFail로 인한 server start wait...");
+                    Console.WriteLine("ConnectFail로 인한 server start wait...");
+                    Thread.Sleep(2000);
+                }
             }
-            else
-            {
-                res = new SaveResultInfo();
-                res.Flag = 0;
-                res.Desc = "컨버트 저장 오류 발생";
-            }
-            return res;
+            return result;
         }
-         */
-
-
+      
         /* 컨트롤러 한 Zip 파일 완료 업데이트
          */
         public static SaveResultInfo updateZipFileAllInfo(FileProcess row)
@@ -90,7 +107,7 @@ namespace IqaController.service
             //domain.Add("zipfileInfo", domain);
             String result = iqaService.sendService(domain, uri);
 
-            if (result != "NOK")
+            if (result.IndexOf("NOK") < 0)
             {
                 res = (SaveResultInfo)Newtonsoft.Json.JsonConvert.DeserializeObject(result, typeof(SaveResultInfo));
             }
@@ -99,37 +116,60 @@ namespace IqaController.service
                 res = new SaveResultInfo();
                 res.Flag = 0;
                 res.Desc = "zip파일 완료 DB 저장오류 발생";
-
             }
             return res;
+        }
+
+        public static SaveResultInfo updateEventOrifileSendResult(EventOriFileProcResult eventOrifileProc)
+        {
+
+            string uri = Define.CON_WEB_SERVICE + "manage/setUpdateEventOrifileSendResult.do";
+            Dictionary<string, Object> domain = eventOrifileProc.getDomain();
+
+            String result = iqaService.sendService(domain, uri);
+            SaveResultInfo res = null;
+            if (result.IndexOf("NOK") < 0)
+            {
+                res = (SaveResultInfo)Newtonsoft.Json.JsonConvert.DeserializeObject(result, typeof(SaveResultInfo));
+            }
+            else
+            {
+                res = new SaveResultInfo();
+                res.Flag = 0;
+                res.Desc = "Event Drm File Ftp Send Error";
+            }
+            return res;
+
+
         }
 
         public static SaveResultInfo updateZipfileMainInfo(FileProcess row, String flag)
         {
 
             string uri = Define.CON_WEB_SERVICE + "manage/insertZipFileInfo.do";
-            Dictionary<string, Object> domain = row.getDomain(false);
+            Dictionary<string, Object> domain = row.getDomain(false);            
+            Dictionary<string, Object> domainZipMain = (Dictionary<string, Object>)domain["zipfileMain"];
 
             if (flag == Define.con_STATE_START_NAMING)                      
             {
-                domain.Add("startTime", "1");                             //처리 시작시간
+                domainZipMain.Add("startTime", "Y");                             //처리 시작시간
             }
             else if (flag == Define.con_STATE_START_UNZIP)
             {
-                domain.Add("unzipStartTime", "1");                        //UnZip 시작 시점 업데이트
+                domainZipMain.Add("unzipStartTime", "Y");                        //UnZip 시작 시점 업데이트
             }
             else if (flag == Define.con_STATE_START_FTP)
             {
-                domain.Add("uploadStartTime", "1");                       //업로드 시작 시점 업데이트 - 화면설계상 없어서 사용안함
+                domainZipMain.Add("uploadStartTime", "Y");                       //업로드 시작 시점 업데이트 - 화면설계상 없어서 사용안함
             }
             else if (flag == Define.con_STATE_START_CONV)
             {
-                domain.Add("convStartTime", "1");                       //업로드 시작 시점 업데이트 - 화면설계상 없어서 사용안함
+                domainZipMain.Add("convStartTime", "Y");                       //업로드 시작 시점 업데이트 - 화면설계상 없어서 사용안함
             }
 
             String result = iqaService.sendService(domain, uri);
             SaveResultInfo res = null;
-            if (result != "NOK")
+            if (result.IndexOf("NOK") < 0)
             {
                 res = (SaveResultInfo)Newtonsoft.Json.JsonConvert.DeserializeObject(result, typeof(SaveResultInfo));
             }
@@ -141,7 +181,37 @@ namespace IqaController.service
             }
             return res;
         }
+        /* 전송해야할 Event Drm 파일정보를 가져온다. - FTP 전송을 위해서
+         * 
+        */
+        public static CommonResultEntity getEventOrifileList(string procServer)
+        {
+            string uri = Define.CON_WEB_SERVICE + "manage/getEventOriFileList.do";
+            Dictionary<string, Object> domain = new Dictionary<string, object>();
+            
+            domain.Add("isSingleZipFile", "1");
+            domain.Add("procServer", procServer);
 
+            String jsonResult = iqaService.sendService(domain, uri);
+
+            CommonResultEntity output = new CommonResultEntity();
+
+            List <EventOriFileEntity> result = null;
+            if (jsonResult.IndexOf("NOK") < 0)
+            {
+                result = (List<EventOriFileEntity>)Newtonsoft.Json.JsonConvert.DeserializeObject(jsonResult, typeof(List<EventOriFileEntity>));
+                output.Flag = Define.con_SUCCESS;
+                output.Result = result;
+            }
+            else
+            {                
+                string errDesc = jsonResult.Split(':')[1];
+                //util.Log("[ERR]:getEventOrifileList", errDesc);
+                output.Result = errDesc;
+            }
+
+            return output;
+        }        
         /*
          */
         public static SaveResultInfo insertZipfileInfos(List<FileProcess> dbInsertList)
@@ -160,7 +230,7 @@ namespace IqaController.service
 
             String result = iqaService.sendService(domain, uri);
             SaveResultInfo res = null;
-            if (result != "NOK")
+            if (result.IndexOf("NOK") < 0)
             {
                 res = (SaveResultInfo)Newtonsoft.Json.JsonConvert.DeserializeObject(result, typeof(SaveResultInfo));
             }
@@ -194,99 +264,55 @@ namespace IqaController.service
             return freeServerInfo;
         }
 
-
-        public static List<ControllerFileKeepEntity> serviceTest()
+        public static CommonResultEntity getControllerFilePeriod()
         {
             
-            string URL = Define.CON_WEB_SERVICE + "manage/csharpTest.do";
-            
-            List<CodeNameEntity> codeNames = new List<CodeNameEntity>();
-            CodeNameEntity test1 = new CodeNameEntity();
-            test1.Code = "1";
-            test1.Name = "김인철";
-
-            CodeNameEntity test2 = new CodeNameEntity();
-            test2.Code = "2";
-            test2.Name = "김소연";
-
-            codeNames.Add(test1);
-            codeNames.Add(test2);
-
-            Dictionary<string, Object> param = new Dictionary<string, Object>();
-            param.Add("zipfileNm", "test");
-            param.Add("codes", codeNames);
-
-
-            
-
-
-            string jsonStr = Newtonsoft.Json.JsonConvert.SerializeObject(param);
-
-            List<ControllerFileKeepEntity> lstFile = null;
-          
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(URL);
-            httpWebRequest.ContentType = "application/json";
-            httpWebRequest.Method = "POST";
-
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
-            {              
-                streamWriter.Write(jsonStr);
-            }
-
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-            {
-                var result = streamReader.ReadToEnd();
-                lstFile = (List<ControllerFileKeepEntity>)Newtonsoft.Json.JsonConvert.DeserializeObject(result, typeof(List<ControllerFileKeepEntity>));
-            }
-
-            return lstFile;
-        }
-
-        public static List<ControllerFileKeepEntity> getControllerFilePeriod()
-        {
-
-            NameValueCollection postData = new NameValueCollection();
-            //postData.Add("test", "test");
-
-            List < ControllerFileKeepEntity>lstFile  = null;
-
             string uri = Define.CON_WEB_SERVICE + "manage/getControllerFilePeriod.do";
-            WebClient webClient = new WebClient();
-            string pagesource = "";
-            try
+            Dictionary<string, Object> domain = new Dictionary<string, object>();
+            String jsonResult = iqaService.sendService(domain, uri);
+
+            CommonResultEntity output = new CommonResultEntity();
+
+            List<ControllerFileKeepEntity> result = null;
+            if (jsonResult.IndexOf("NOK") < 0)
             {
-                pagesource = Encoding.UTF8.GetString(webClient.UploadValues(uri, postData));
-                lstFile = (List<ControllerFileKeepEntity>)Newtonsoft.Json.JsonConvert.DeserializeObject(pagesource, typeof(List<ControllerFileKeepEntity>));
+                result = (List<ControllerFileKeepEntity>)Newtonsoft.Json.JsonConvert.DeserializeObject(jsonResult, typeof(List<ControllerFileKeepEntity>));
+                output.Flag = Define.con_SUCCESS;
+                output.Result = result;
             }
-            catch (Exception ex)
+            else
             {
-                util.Log("[ERROR(getControllerFilePeriod.do)]", ex.Message);
-                //return false;
+                string errDesc = jsonResult.Split(':')[1];
+                //util.Log("[ERR]:getEventOrifileList", errDesc);
+                output.Result = errDesc;
             }
-            return lstFile;
+
+            return output;
+
         }
 
-        public static List<ControllerServerEntity>  getControllerServer()
+        public static CommonResultEntity getControllerServer()
         {
+           
             string uri = Define.CON_WEB_SERVICE + "manage/getControllerServer.do";
-            string pagesource = "";
-            WebClient webClient = new WebClient();
-            NameValueCollection postData = new NameValueCollection();
+            Dictionary<string, Object> domain = new Dictionary<string, object>();
+            String jsonResult = iqaService.sendService(domain, uri);
 
+            CommonResultEntity output = new CommonResultEntity();
 
-            List<ControllerServerEntity> lstServer = null;
-
-            try
+            List<ControllerServerEntity> result = null;
+            if (jsonResult.IndexOf("NOK") < 0)
             {
-                pagesource = Encoding.UTF8.GetString(webClient.UploadValues(uri, postData));
-                lstServer = (List<ControllerServerEntity>)Newtonsoft.Json.JsonConvert.DeserializeObject(pagesource, typeof(List<ControllerServerEntity>));
+                result = (List<ControllerServerEntity>)Newtonsoft.Json.JsonConvert.DeserializeObject(jsonResult, typeof(List<ControllerServerEntity>));
+                output.Flag = Define.con_SUCCESS;
+                output.Result = result;
             }
-            catch (Exception ex)
+            else
             {
-                util.Log("[ERROR(getControllerServer.do)]", ex.Message);                
+                string errDesc = jsonResult.Split(':')[1];                
+                output.Result = errDesc;
             }
-            return lstServer;
+            return output;
         }
     }
 }

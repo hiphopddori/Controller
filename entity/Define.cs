@@ -25,7 +25,9 @@ namespace IqaController.entity
         //public const string con_ING_FTPUPLOAD = "FTPUPLOAD";
         //public const string con_ING_CONV = "CONV";
 
-
+        public const string con_EVENT_DRM_STATE_DRM = "UZ";         //DRM 파일 추출중        
+        public const string con_EVENT_DRM_STATE_FTP = "FTP";        //DRM 파일 추출중
+        public const string con_EVENT_DRM_STATE_END = "WORK_END";   //작업 끝
 
         public const string con_DIR_WORK = "WORK";
         public const string con_DIR_NAMING = "NAMING_ERROR";
@@ -34,6 +36,7 @@ namespace IqaController.entity
         public const string con_DIR_ZIPDUP = "ZIPDUP_ERROR";
         public const string con_DIR_CONVERT = "CONVERT_ERROR";
         public const string con_DIR_BACK = "BACK";
+        public const string con_DIR_EVENT_ORIFILE = "EVENT_ORIFILE_WORK";
 
         public const string con_STATE_START_NAMING = "S_NM";   //네이밍 시작
         public const string con_STATE_START_UNZIP = "S_UZ";    //UNZIP 시작
@@ -47,7 +50,7 @@ namespace IqaController.entity
         public const string con_STATE_COMPLETE_NAMING = "NM";   //네이밍 완료
         public const string con_STATE_COMPLETE_UNZIP = "UZ";    //UNZIP 완료
         public const string con_STATE_COMPLETE_CONV = "CONV";   //CONVERTOR 완료
-        public const string con_STATE_COMPLETE_FTP = "FTP";   //FTP 완료  //의미 있나 바로 모두 완료 될텐데
+        public const string con_STATE_COMPLETE_FTP = "FTP";   //FTP 완료
 
         public const string con_STATE_ERR_NAMING = "E_NM";
         public const string con_STATE_ERR_UNZIP = "E_UZ";
@@ -67,6 +70,7 @@ namespace IqaController.entity
         public const int con_KEY_PROCESS_COLIDX = 10;
         public const int con_KEY_PROCESSLOG_COLIDX = 5;
         public const int con_KEY_PROCESSERROR_COLIDX = 6;
+        public const int con_KEY_EVENTDRM_COLIDX = 0;
 
     }
 }

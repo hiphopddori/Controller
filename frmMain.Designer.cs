@@ -43,6 +43,8 @@
             this.dgvEnv = new IqaController.DataGridViewEx();
             this.cboFtpServer = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.dgvDrmFileSend = new IqaController.DataGridViewEx();
             this.tabMain.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProcessLog)).BeginInit();
@@ -51,6 +53,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvErrorFile)).BeginInit();
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEnv)).BeginInit();
+            this.tabPage4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvDrmFileSend)).BeginInit();
             this.SuspendLayout();
             // 
             // btnService
@@ -107,6 +111,7 @@
             this.tabMain.Controls.Add(this.tabPage1);
             this.tabMain.Controls.Add(this.tabPage2);
             this.tabMain.Controls.Add(this.tabPage3);
+            this.tabMain.Controls.Add(this.tabPage4);
             this.tabMain.Location = new System.Drawing.Point(12, 30);
             this.tabMain.Name = "tabMain";
             this.tabMain.SelectedIndex = 0;
@@ -209,6 +214,26 @@
             this.label1.TabIndex = 7;
             this.label1.Text = "서버";
             // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.dgvDrmFileSend);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(976, 662);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "drm 파일전송";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // dgvDrmFileSend
+            // 
+            this.dgvDrmFileSend.AllowUserToAddRows = false;
+            this.dgvDrmFileSend.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvDrmFileSend.Location = new System.Drawing.Point(3, 3);
+            this.dgvDrmFileSend.Name = "dgvDrmFileSend";
+            this.dgvDrmFileSend.RowTemplate.Height = 23;
+            this.dgvDrmFileSend.Size = new System.Drawing.Size(970, 656);
+            this.dgvDrmFileSend.TabIndex = 0;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -238,6 +263,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvErrorFile)).EndInit();
             this.tabPage3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvEnv)).EndInit();
+            this.tabPage4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvDrmFileSend)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -260,6 +287,8 @@
         private System.Windows.Forms.Label label1;
         private DataGridViewEx dgvProcessLog;
         private DataGridViewEx dgvErrorFile;
+        private System.Windows.Forms.TabPage tabPage4;
+        private DataGridViewEx dgvDrmFileSend;
     }
 }
 
