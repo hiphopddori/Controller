@@ -41,10 +41,11 @@
             this.dgvErrorFile = new IqaController.DataGridViewEx();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.dgvEnv = new IqaController.DataGridViewEx();
-            this.cboFtpServer = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.dgvDrmFileSend = new IqaController.DataGridViewEx();
+            this.cboFtpServer = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.ucLoadingBar = new IqaController.ucLoadingBar();
             this.tabMain.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProcessLog)).BeginInit();
@@ -195,25 +196,6 @@
             this.dgvEnv.TabIndex = 0;
             this.dgvEnv.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvEnv_CellClick);
             // 
-            // cboFtpServer
-            // 
-            this.cboFtpServer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboFtpServer.FormattingEnabled = true;
-            this.cboFtpServer.Location = new System.Drawing.Point(47, 4);
-            this.cboFtpServer.Name = "cboFtpServer";
-            this.cboFtpServer.Size = new System.Drawing.Size(102, 20);
-            this.cboFtpServer.TabIndex = 6;
-            this.cboFtpServer.SelectedIndexChanged += new System.EventHandler(this.cboFtpServer_SelectedIndexChanged);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(14, 8);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(29, 12);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "서버";
-            // 
             // tabPage4
             // 
             this.tabPage4.Controls.Add(this.dgvDrmFileSend);
@@ -234,11 +216,39 @@
             this.dgvDrmFileSend.Size = new System.Drawing.Size(970, 656);
             this.dgvDrmFileSend.TabIndex = 0;
             // 
+            // cboFtpServer
+            // 
+            this.cboFtpServer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboFtpServer.FormattingEnabled = true;
+            this.cboFtpServer.Location = new System.Drawing.Point(47, 4);
+            this.cboFtpServer.Name = "cboFtpServer";
+            this.cboFtpServer.Size = new System.Drawing.Size(102, 20);
+            this.cboFtpServer.TabIndex = 6;
+            this.cboFtpServer.SelectedIndexChanged += new System.EventHandler(this.cboFtpServer_SelectedIndexChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(14, 8);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(29, 12);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "서버";
+            // 
+            // ucLoadingBar
+            // 
+            this.ucLoadingBar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ucLoadingBar.Location = new System.Drawing.Point(367, 346);
+            this.ucLoadingBar.Name = "ucLoadingBar";
+            this.ucLoadingBar.Size = new System.Drawing.Size(337, 43);
+            this.ucLoadingBar.TabIndex = 10;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 730);
+            this.Controls.Add(this.ucLoadingBar);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cboFtpServer);
             this.Controls.Add(this.tabMain);
@@ -289,6 +299,7 @@
         private DataGridViewEx dgvErrorFile;
         private System.Windows.Forms.TabPage tabPage4;
         private DataGridViewEx dgvDrmFileSend;
+        private ucLoadingBar ucLoadingBar;
     }
 }
 

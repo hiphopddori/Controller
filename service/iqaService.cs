@@ -15,6 +15,8 @@ namespace IqaController.service
     static class iqaService
     {
 
+        public static frmMain mainForm = null;
+
         /* 서비스 공통 
         */
         public static string serviceCall(Dictionary<string, Object> param, string url)
@@ -55,7 +57,7 @@ namespace IqaController.service
                 if (bConnectFail)
                 {
                     //재호출 한다.
-                    return "ConectFail";
+                    return Define.con_SERVICE_CON_FAIL;
                 }
                 else
                 {
@@ -77,22 +79,34 @@ namespace IqaController.service
             }
         }
 
-        public  static string sendService(Dictionary<string, Object> param,string url)
+        public  static string sendService(Dictionary<string, Object> param ,string url , Boolean bWait = true)
         {
             //톰캣 배포시 끊기는 현상떄문에 오류 막기위해 재전송처리
+
+            mainForm.loadingOn(url);
+            Boolean bReSend = false;
             string result = "start";
-            while (result == "ConectFail" || result =="start")
+            while ((result == Define.con_SERVICE_CON_FAIL  && bWait)  || result =="start")
             {
+                if (bReSend)
+                {                    
+                    mainForm.loadingOn("[재시도중..]:" + url);
+                }
+
                 result = iqaService.serviceCall(param, url);
 
-                if (result == "ConectFail")
+                if (result == "ConectFail" && bWait)
                 {
+                    bReSend = true;
                     util.Log("sendService : error url = ", url);
                     util.Log("sendService : error desc = ", "ConnectFail로 인한 server start wait...");
                     Console.WriteLine("ConnectFail로 인한 server start wait...");
                     Thread.Sleep(2000);
                 }
             }
+
+            mainForm.loadingOff();
+
             return result;
         }
       
@@ -120,11 +134,12 @@ namespace IqaController.service
             return res;
         }
 
-        public static SaveResultInfo updateEventOrifileSendResult(EventOriFileProcResult eventOrifileProc)
+        public static SaveResultInfo updateEventOrifileSendResult(EventOriFileProcResult eventOrifileProc , List<EventOriFileEntity> drmFileResults)
         {
 
             string uri = Define.CON_WEB_SERVICE + "manage/setUpdateEventOrifileSendResult.do";
             Dictionary<string, Object> domain = eventOrifileProc.getDomain();
+            domain.Add("drmFileResult", drmFileResults);
 
             String result = iqaService.sendService(domain, uri);
             SaveResultInfo res = null;
@@ -181,6 +196,36 @@ namespace IqaController.service
             }
             return res;
         }
+        /* unzip 파일정보를 업데이트 하고 중복 drm 정보를 얻는다.
+         */
+        public static CommonResultEntity setUnzipFileInfoUpdateAndGetDupInfo(FileProcess row)
+        {
+
+            string uri = Define.CON_WEB_SERVICE + "manage/setUnzipFileInfoUpdateAndGetDupInfo.do";
+            
+            Dictionary<string, Object> domain = row.getDomain(true);
+
+            CommonResultEntity output = new CommonResultEntity();
+            List<CodeNameEntity> result = null;
+
+            String jsonResult = iqaService.sendService(domain, uri);
+
+            if (jsonResult.IndexOf("NOK") < 0)
+            {
+                result = (List<CodeNameEntity>)Newtonsoft.Json.JsonConvert.DeserializeObject(jsonResult, typeof(List<CodeNameEntity>));
+                
+                output.Flag = Define.con_SUCCESS;
+                output.Result = result;
+            }
+            else
+            {
+                string errDesc = jsonResult.Split(':')[1];            
+                 output.Result = errDesc;
+            }
+
+            return output;
+        }
+        
         /* 전송해야할 Event Drm 파일정보를 가져온다. - FTP 전송을 위해서
          * 
         */
@@ -245,6 +290,7 @@ namespace IqaController.service
 
         public static ControllerServerEntity getFreeFtpServerInfo()
         {
+            
             string uri = Define.CON_WEB_SERVICE + "manage/geFreeServerList.do";
             WebClient webClient = new WebClient();
             NameValueCollection postData = new NameValueCollection();
@@ -262,6 +308,7 @@ namespace IqaController.service
                 Console.WriteLine(ex.Message.ToString());
             }
             return freeServerInfo;
+            
         }
 
         public static CommonResultEntity getControllerFilePeriod()
@@ -269,7 +316,12 @@ namespace IqaController.service
             
             string uri = Define.CON_WEB_SERVICE + "manage/getControllerFilePeriod.do";
             Dictionary<string, Object> domain = new Dictionary<string, object>();
-            String jsonResult = iqaService.sendService(domain, uri);
+            String jsonResult = iqaService.sendService(domain, uri,false);
+
+            if (jsonResult == Define.con_SERVICE_CON_FAIL)
+            {
+                return null;
+            }
 
             CommonResultEntity output = new CommonResultEntity();
 

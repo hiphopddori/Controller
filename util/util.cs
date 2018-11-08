@@ -25,18 +25,15 @@ namespace IqaController
                 //w.WriteLine("{0} : {1} {2} : {3}", flag, DateTime.Now.ToLongTimeString(),
                 //DateTime.Now.ToLongDateString(), logMessage);
 
-
-                string cur = DateTime.Now.ToString("yyyyMMddHH");
-
                 DirectoryInfo diChk = new DirectoryInfo(".\\log\\");
                 if (diChk.Exists == false)
                 {
                     diChk.Create();
                 }
 
-                System.IO.File.AppendAllText(".\\log\\" + cur +".txt", String.Format("\n{0} : {1} {2} : {3}", flag, DateTime.Now.ToLongTimeString(),
-                DateTime.Now.ToLongDateString(), logMessage));
-
+                string cur = DateTime.Now.ToString("yyyyMMdd");
+                System.IO.File.AppendAllText(".\\log\\" + cur +".txt", String.Format("[{0}] : [{1} {2}] : [{3}]", flag, DateTime.Now.ToLongDateString()
+                        , DateTime.Now.ToLongTimeString(), logMessage) + Environment.NewLine);
             }
             catch (Exception ex)
             {
@@ -86,10 +83,54 @@ namespace IqaController
             }
             catch (Exception ex)
             {
-                util.Log("[ERR]:[directoryDelete]", ex.Message);
+                util.Log("ERR:directoryDelete", ex.Message);
                 Console.WriteLine(ex.Message.ToString());
                 return false;
             }
+        }
+
+        public static Boolean Wait2FileAccessible(string fullPath,int maxMin)
+        {
+            while (true)
+            {
+                try
+                {
+                    //복사중일경우 Exception 발생한다.
+                    using (var file = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    {
+                        break;
+                    }
+                }
+                catch (IOException)
+                {
+                    Thread.Sleep(1000);
+                }
+            }
+
+            //추후 maxMin 처리하자
+            return true;
+        }
+
+        public static long CalculateDirectorySize(DirectoryInfo directory, bool includeSubdirectories)
+        {
+            long totalSize = 0;
+
+            FileInfo[] files = directory.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                totalSize += file.Length;
+            }
+
+            if (includeSubdirectories)
+            {
+                DirectoryInfo[] dirs = directory.GetDirectories();
+                foreach (DirectoryInfo dir in dirs)
+                {
+                    totalSize += CalculateDirectorySize(dir, true);
+                }
+            }
+
+            return totalSize;
         }
 
         public static Boolean FileSave(string flag, string sourceFileName, string destiFileName)
@@ -117,6 +158,7 @@ namespace IqaController
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine(ex.Message.ToString());
                     if (ex.HResult == -2147024864)
                     {
                         Thread.Sleep(1500);

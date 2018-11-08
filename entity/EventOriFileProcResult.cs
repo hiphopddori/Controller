@@ -16,9 +16,9 @@ namespace IqaController.entity
         private string unzipErrLog = "";
         private string flagSendFtp = "";
         private string ftpErrLog = "";
-        private string chgCompressFileNm = "";
-        private string curState = Define.CON_WAIT;
+        private string chgCompressFileNm = "";        
         private string isDrmFind = "";
+        private string curState = Define.CON_MSG_WAIT;
 
 
         public string ProcServer { get => procServer; set => procServer = value; }

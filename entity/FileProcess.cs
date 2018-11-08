@@ -92,6 +92,9 @@ namespace IqaController.entity
         internal List<ZipFileDetailEntity> ZipfileDetailList { get => zipfileDetailList; set => zipfileDetailList = value; }
 
 
+        public string OrgZipFIleFullName { get => this.zipfileFullPath + "\\" + this.orgZipFileName; }          //Path+orgZipFileName
+        public string ZipFileFullFileName { get => this.zipfileFullPath + "\\" + this.zipFileName; }            //Path+zipFileName
+
         public ZipFileDetailEntity findZipfileDetail(string flag , string key)
         {
             ZipFileDetailEntity find = null;

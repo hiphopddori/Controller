@@ -10,20 +10,37 @@ namespace IqaController.entity
     {
 
         public const string CON_DEFAULT_DIR = @"D:\FTP";
-        public const string CON_WEB_SERVICE = "http://localhost:8080/IQA/";
-        // private const string CON_ZIP_EXE_PATH = @"C:\Program Files (x86)\7-Zip\7z.exe";
-        public const string CON_ZIP_EXE_PATH = @"C:\Program Files (x86)\7-Zip\";
 
-        public const string CON_COMPLETE = "완료";
-        public const string CON_WAIT = "대기";
-        public const string CON_ING = "진행중";
-        public const string CON_ERROR = "Error";
+
+#if DEBUG
+        public const string CON_WEB_SERVICE = "http://localhost:8080/IQA/";
+        public const string CON_ZIP_EXE_PATH = @"C:\Program Files (x86)\7-Zip\";
+#else
+        public const string CON_WEB_SERVICE = "http://90.90.30.193:8080/IQA/";
+        public const string CON_ZIP_EXE_PATH = @"C:\Program Files\7-Zip\";
+#endif
+
+
+
+        public const string con_SERVICE_CON_FAIL = "ConnectFail";
+
+        //MSG 상수
+        public const string CON_MSG_COMPLETE = "완료";
+        public const string CON_MSG_WAIT = "대기";
+        public const string CON_MSG_ING = "진행중";
+        public const string CON_MSG_ERROR = "Error";
 
         //진행단계
         //public const string con_ING_START = "START";
         //public const string con_ING_UNZIP = "UNZIP";
         //public const string con_ING_FTPUPLOAD = "FTPUPLOAD";
         //public const string con_ING_CONV = "CONV";
+
+
+        public const string con_FTP_QMS = "QMS";
+        public const string con_FTP_WAV = "WAV";
+        public const string con_FTP_DRM = "DRM";
+
 
         public const string con_EVENT_DRM_STATE_DRM = "UZ";         //DRM 파일 추출중        
         public const string con_EVENT_DRM_STATE_FTP = "FTP";        //DRM 파일 추출중

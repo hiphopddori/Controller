@@ -36,7 +36,7 @@ namespace IqaController
             setData();
         }
 
-        private void dbControlsetServer()
+        private void DBControlsetServer()
         {
 
             NameValueCollection postData = new NameValueCollection();
@@ -54,7 +54,7 @@ namespace IqaController
             }
         }
 
-        private void dbControlsetFile()
+        private void DBControlsetFile()
         {
 
             NameValueCollection postData = new NameValueCollection();
@@ -85,7 +85,7 @@ namespace IqaController
             dgvFile.addColumn("보관주기", 150);            
         }
 
-        private void setDataServer()
+        private void SetDataServer()
         {
             foreach (ControllerServerEntity server in m_lstServer)
             {
@@ -103,7 +103,7 @@ namespace IqaController
 
         private void setData()
         {
-            setDataServer();
+            SetDataServer();
             setDataFile();
         }
 
@@ -121,7 +121,7 @@ namespace IqaController
         {
             int nRow = 0;
             dgvServer.RowCount = dgvServer.RowCount + 1;
-            nRow = dgvFile.RowCount - 1;
+            nRow = dgvServer.RowCount - 1;
             dgvServer.Rows[nRow].Cells[0].Value = row.Name;
             dgvServer.Rows[nRow].Cells[1].Value = row.Ip;
             dgvServer.Rows[nRow].Cells[2].Value = row.Id;
@@ -169,8 +169,8 @@ namespace IqaController
                 if (result.Flag == 1)
                 {
                     //다시 조회한다.
-                    dbControlsetServer();
-                    setDataServer();
+                    DBControlsetServer();
+                    SetDataServer();
 
                     txtServerIp.Text = "";
                     txtServerId.Text = "";
@@ -226,7 +226,7 @@ namespace IqaController
                 if (result.Flag == 1)
                 {
                     //다시 조회한다.
-                    dbControlsetFile();
+                    DBControlsetFile();
                     setDataFile();
 
                     txtItem.Text = "";
