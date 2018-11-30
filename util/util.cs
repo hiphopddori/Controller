@@ -41,6 +41,30 @@ namespace IqaController
             }            
         }
 
+        public static void LogDrm(string flag, string logMessage)
+        {
+            try
+            {
+                //w.WriteLine("{0} : {1} {2} : {3}", flag, DateTime.Now.ToLongTimeString(),
+                //DateTime.Now.ToLongDateString(), logMessage);
+
+                DirectoryInfo diChk = new DirectoryInfo(".\\log\\drm\\");
+                if (diChk.Exists == false)
+                {
+                    diChk.Create();
+                }
+
+                string cur = DateTime.Now.ToString("yyyyMMdd");
+                System.IO.File.AppendAllText(".\\log\\drm\\" + cur + ".txt", String.Format("[{0}] : [{1} {2}] : [{3}]", flag, DateTime.Now.ToLongDateString()
+                        , DateTime.Now.ToLongTimeString(), logMessage) + Environment.NewLine);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+
         public static void SetIniWriteString(string section, string key, string val, string filePath)
         {
             WritePrivateProfileString(section, key, val, filePath);
@@ -131,6 +155,13 @@ namespace IqaController
             }
 
             return totalSize;
+        }
+
+        public static string GetCurrentDate(string format)
+        {
+            DateTime dt = DateTime.Now;
+            string curDate = String.Format(format, dt);
+            return curDate;
         }
 
         public static Boolean FileSave(string flag, string sourceFileName, string destiFileName)

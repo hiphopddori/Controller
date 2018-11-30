@@ -52,7 +52,7 @@ namespace IqaController.entity
         public const string con_DIR_UPLOAD = "UPLOAD_ERROR";
         public const string con_DIR_ZIPDUP = "ZIPDUP_ERROR";
         public const string con_DIR_CONVERT = "CONVERT_ERROR";
-        public const string con_DIR_BACK = "BACK";
+        public const string con_DIR_BACK = "BACKUP";
         public const string con_DIR_EVENT_ORIFILE = "EVENT_ORIFILE_WORK";
 
         public const string con_STATE_START_NAMING = "S_NM";   //네이밍 시작

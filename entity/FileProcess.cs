@@ -130,6 +130,27 @@ namespace IqaController.entity
             return find;
         }
 
+        public string GetWorkFileFullPathName()
+        {
+            return this.zipfileFullPath + "\\" + this.zipFileName;
+        }
+
+        public string GetErr2MovFileDirPath(string path, string dirFlag)
+        {
+            string fullPathName = "";
+            string withoutExtensionZipfileName = Path.GetFileNameWithoutExtension(this.zipFileName);
+            fullPathName = path + "\\" + dirFlag + "\\" + withoutExtensionZipfileName;
+            return fullPathName;
+        }
+
+        public string GetErr2MovFileFullPathName(string path , string dirFlag)
+        {
+            string fullPathName = "";
+            string withoutExtensionZipfileName = Path.GetFileNameWithoutExtension(this.zipFileName);
+            fullPathName = path + "\\" + dirFlag + "\\" + withoutExtensionZipfileName + "\\" + this.orgZipFileName;
+            return fullPathName;
+        }
+        
         public Dictionary<string, Object> getDomain(Boolean bDetail)
         {
             Dictionary<string, Object> domain = new Dictionary<string, object>();

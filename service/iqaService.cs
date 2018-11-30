@@ -51,6 +51,9 @@ namespace IqaController.service
                     if (status == WebExceptionStatus.ConnectFailure)
                     {
                         bConnectFail = true;
+                    }else if (status == WebExceptionStatus.ReceiveFailure)
+                    {
+                        bConnectFail = true;
                     }
                 }
 
@@ -139,7 +142,16 @@ namespace IqaController.service
 
             string uri = Define.CON_WEB_SERVICE + "manage/setUpdateEventOrifileSendResult.do";
             Dictionary<string, Object> domain = eventOrifileProc.getDomain();
-            domain.Add("drmFileResult", drmFileResults);
+            
+
+            List<Dictionary<string, Object>> lstDomain = new List<Dictionary<string, object>>();
+            foreach (EventOriFileEntity drmResult in drmFileResults)
+            {
+                lstDomain.Add(drmResult.getDomain());
+            }
+
+            //domain.Add("drmFileResult", drmFileResults);
+            domain.Add("drmFileResult", lstDomain);
 
             String result = iqaService.sendService(domain, uri);
             SaveResultInfo res = null;
@@ -311,12 +323,12 @@ namespace IqaController.service
             
         }
 
-        public static CommonResultEntity getControllerFilePeriod()
+        public static CommonResultEntity getControllerFilePeriod(bool bWait)
         {
             
             string uri = Define.CON_WEB_SERVICE + "manage/getControllerFilePeriod.do";
             Dictionary<string, Object> domain = new Dictionary<string, object>();
-            String jsonResult = iqaService.sendService(domain, uri,false);
+            String jsonResult = iqaService.sendService(domain, uri, bWait);
 
             if (jsonResult == Define.con_SERVICE_CON_FAIL)
             {
