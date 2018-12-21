@@ -10,13 +10,14 @@ namespace IqaController.entity
 {
     class FileProcess
     {
+        private string uploadDate = "";             // DB 상의 파티션 잡혀있음
         private string measuDate = "";              // Zip파일 측정일 정보 Upload_date에 해당 값 넣는다.
         private string filePos = "";                // 파일
         private string processServer = "";          // 처리서버
         private string measuGroup = "";             // 측정조
         private string measuBranch = "";            // 측정본부
-        private string zipFileName = "";            // zip 파일 작업가공 이름
-        private string orgZipFileName = "";         // zip 파일 이름 원본이름
+        private string zipFileName = "";            // zip 파일 작업가공 이름 - 뒤에 시스템 날짜 추가됨
+        private string orgZipFileName = "";         // zip 파일 이름 원본이름 - 파일 원래 이름 KEY 임(문제되는 이름 가공된 버전) 2018-12-10일 추가 콤마 자동 변환처리 추가        
         private string workZipFileName = "";        // 임시 작업성 zip파일 명
         private string inoutType = "";
         private string comp = "";
@@ -93,7 +94,8 @@ namespace IqaController.entity
 
 
         public string OrgZipFIleFullName { get => this.zipfileFullPath + "\\" + this.orgZipFileName; }          //Path+orgZipFileName
-        public string ZipFileFullFileName { get => this.zipfileFullPath + "\\" + this.zipFileName; }            //Path+zipFileName
+        public string ZipFileFullFileName { get => this.zipfileFullPath + "\\" + this.zipFileName; }            //Path+zipFileName        
+        public string UploadDate { get => uploadDate; set => uploadDate = value; }
 
         public ZipFileDetailEntity findZipfileDetail(string flag , string key)
         {
@@ -135,11 +137,21 @@ namespace IqaController.entity
             return this.zipfileFullPath + "\\" + this.zipFileName;
         }
 
+        
+
         public string GetErr2MovFileDirPath(string path, string dirFlag)
         {
             string fullPathName = "";
             string withoutExtensionZipfileName = Path.GetFileNameWithoutExtension(this.zipFileName);
             fullPathName = path + "\\" + dirFlag + "\\" + withoutExtensionZipfileName;
+            return fullPathName;
+        }
+        /* 시스템 날짜 포함한 ZIP 파일 풀경로
+         */
+        public string GetZipfileFullPathName(string path, string dirFlag)
+        {
+            string fullPathName = "";            
+            fullPathName = path + "\\" + dirFlag + "\\" + this.ZipFileName;
             return fullPathName;
         }
 
@@ -149,6 +161,64 @@ namespace IqaController.entity
             string withoutExtensionZipfileName = Path.GetFileNameWithoutExtension(this.zipFileName);
             fullPathName = path + "\\" + dirFlag + "\\" + withoutExtensionZipfileName + "\\" + this.orgZipFileName;
             return fullPathName;
+        }
+        /*2018-12-12 작성하다 우선 보류한다.*/
+        public string GetConvertorCallServiceType()
+        {
+            /*              
+             O. 서비스망유형 확인하여, 해당 컨버터 명령 실행 시 체크방식
+            * DRM파일명을 대문자로 변환하여
+            o. CSFB
+            1) DRM파일명 상 'CSFB_' 또는 '_CSFB' 또는 ' CSFB ' 또는 '3G음성'
+            2) DRM파일명 상 'VOICE_' 또는 '_O_' 또는 '_T_' 또는 ' 발신 ' 또는 ' 착신 ' 이면서, 
+            ZIP파일명 상 'CSFB_' 또는 'CSFBML_' 인 경우
+            3) 위의 1) 또는 2) 의 해당하지 않는 경우는 ZIP파일명 상의 정보 기준으로 처리 
+
+            o. HDVOICE
+            1) DRM파일명 상 'HDV_' 또는 '_HDV' 또는 ' HDV ' 또는 'VOLTE_' 또는 'VOLTE ' 
+            2) DRM파일명 상 'VOICE_' 또는 '_O_' 또는 '_T_' 또는 ' 발신 ' 또는 ' 착신 ' 이면서, 
+            ZIP파일명 상 'HDV_' 또는 'HDVML_' 인 경우
+            3) 위의 1) 또는 2) 의 해당하지 않는 경우는 ZIP파일명 상의 정보 기준으로 처리
+
+            o. HSDPA
+            1) DRM파일명 상 'HSDPA_' 또는 ' W DATA ' 
+            2) DRM파일명 상 'MC_FTP_' 또는 'FTP_' 이면서, ZIP파일명 상 'HSDPA_' 인 경우
+            3) 위의 1) 또는 2) 의 해당하지 않는 경우는 ZIP파일명 상의 정보 기준으로 처리
+
+            o. LTED
+            1) DRM파일명 상 'LTED_' 또는 ' LTE DATA '
+            2) DRM파일명 상 'MC_FTP_' 또는 'FTP_' 또는 'APP_FTP' 이면서, 
+            ZIP파일명 상 'LTED_' 인 경우
+            3) 위의 1) 또는 2) 의 해당하지 않는 경우는 ZIP파일명 상의 정보 기준으로 처리 
+              
+            */
+            string zipfileNm = this.orgZipFileName;
+            string serviceType = this.serviceType;
+            string drmFileNm = "";
+
+            zipfileNm = zipfileNm.ToUpper();
+
+
+            foreach (ZipFileDetailEntity zd in this.zipfileDetailList)
+            {
+
+                drmFileNm = zd.UnzipfileNm;
+                drmFileNm = drmFileNm.ToUpper();
+
+                if (drmFileNm.IndexOf("CSFB") >= 0 || drmFileNm.IndexOf("3G음성") >= 0)
+                {
+                    serviceType = "CSFB";
+                }
+                else if((zipfileNm.IndexOf("CSFB_") >=0 || zipfileNm.IndexOf("CSFBML_") >=0)  && 
+                        (
+                            drmFileNm.IndexOf("VOICE_") >=0 || drmFileNm.IndexOf("_O_") >= 0 || drmFileNm.IndexOf("_T_") >= 0) || drmFileNm.IndexOf("발신") >= 0 || drmFileNm.IndexOf("착신") >= 0
+                        )
+                {
+                    serviceType = "CSFB";
+                }
+            }
+
+            return serviceType;
         }
         
         public Dictionary<string, Object> getDomain(Boolean bDetail)
@@ -171,6 +241,7 @@ namespace IqaController.entity
             domainZM.Add("completefileCnt", this.completefileCnt);
             domainZM.Add("parsingCompleteCnt", this.parsingCompleteCnt);
             domainZM.Add("curState", this.curState);
+            domainZM.Add("uploadDate", this.uploadDate);                            
 
             domain.Add("zipfileMain", domainZM);
 

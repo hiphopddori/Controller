@@ -86,6 +86,10 @@ namespace IqaController.service
         {
             //톰캣 배포시 끊기는 현상떄문에 오류 막기위해 재전송처리
 
+
+            Boolean bUrlToggle = true;
+            string fullUrl = "";
+            //fullUrl = Define.CON_WEB_SERVICE + url;
             mainForm.loadingOn(url);
             Boolean bReSend = false;
             string result = "start";
@@ -95,8 +99,19 @@ namespace IqaController.service
                 {                    
                     mainForm.loadingOn("[재시도중..]:" + url);
                 }
+                //WEB SERVER CHANGE
+                if (bUrlToggle)
+                {
+                    fullUrl = Define.CON_WEB_SERVICE + url;             //WEB_SERVER2
+                }
+                else
+                {
+                    fullUrl = Define.CON_WEB_SERVICE2 + url;            //기존 WEB SERVER
+                }
+                
+                bUrlToggle = !bUrlToggle;
 
-                result = iqaService.serviceCall(param, url);
+                result = iqaService.serviceCall(param, fullUrl);
 
                 if (result == "ConectFail" && bWait)
                 {
@@ -112,6 +127,27 @@ namespace IqaController.service
 
             return result;
         }
+
+        public static String IsZipfileCancel(FileProcess row)
+        {
+            String flagCancel = "0";
+            CommonResultEntity res = null;
+
+            Dictionary<string, Object> domain = new Dictionary<string, object>();
+            domain.Add("zipfileNm",  HttpUtility.UrlEncode(row.ZipFileName));
+
+            string uri = "manage/isZipfileCancel.do";            
+            String result = iqaService.sendService(domain, uri);
+
+            if (result.IndexOf("NOK") < 0)
+            {
+                res = (CommonResultEntity)Newtonsoft.Json.JsonConvert.DeserializeObject(result, typeof(CommonResultEntity));
+                flagCancel = (string)res.Result;
+            }
+
+            return flagCancel;
+        }
+
       
         /* 컨트롤러 한 Zip 파일 완료 업데이트
          */
@@ -119,7 +155,7 @@ namespace IqaController.service
         {
             SaveResultInfo res = null;
 
-            string uri = Define.CON_WEB_SERVICE + "manage/setUpdateZipFileAllInfo.do";
+            string uri = "manage/setUpdateZipFileAllInfo.do";
             Dictionary<string, Object> domain = row.getDomain(true);
             //domain.Add("zipfileInfo", domain);
             String result = iqaService.sendService(domain, uri);
@@ -129,7 +165,7 @@ namespace IqaController.service
                 res = (SaveResultInfo)Newtonsoft.Json.JsonConvert.DeserializeObject(result, typeof(SaveResultInfo));
             }
             else
-            {
+            {                
                 res = new SaveResultInfo();
                 res.Flag = 0;
                 res.Desc = "zip파일 완료 DB 저장오류 발생";
@@ -140,7 +176,7 @@ namespace IqaController.service
         public static SaveResultInfo updateEventOrifileSendResult(EventOriFileProcResult eventOrifileProc , List<EventOriFileEntity> drmFileResults)
         {
 
-            string uri = Define.CON_WEB_SERVICE + "manage/setUpdateEventOrifileSendResult.do";
+            string uri =  "manage/setUpdateEventOrifileSendResult.do";
             Dictionary<string, Object> domain = eventOrifileProc.getDomain();
             
 
@@ -173,7 +209,7 @@ namespace IqaController.service
         public static SaveResultInfo updateZipfileMainInfo(FileProcess row, String flag)
         {
 
-            string uri = Define.CON_WEB_SERVICE + "manage/insertZipFileInfo.do";
+            string uri = "manage/insertZipFileInfo.do";
             Dictionary<string, Object> domain = row.getDomain(false);            
             Dictionary<string, Object> domainZipMain = (Dictionary<string, Object>)domain["zipfileMain"];
 
@@ -213,7 +249,7 @@ namespace IqaController.service
         public static CommonResultEntity setUnzipFileInfoUpdateAndGetDupInfo(FileProcess row)
         {
 
-            string uri = Define.CON_WEB_SERVICE + "manage/setUnzipFileInfoUpdateAndGetDupInfo.do";
+            string uri = "manage/setUnzipFileInfoUpdateAndGetDupInfo.do";
             
             Dictionary<string, Object> domain = row.getDomain(true);
 
@@ -243,7 +279,7 @@ namespace IqaController.service
         */
         public static CommonResultEntity getEventOrifileList(string procServer)
         {
-            string uri = Define.CON_WEB_SERVICE + "manage/getEventOriFileList.do";
+            string uri =  "manage/getEventOriFileList.do";
             Dictionary<string, Object> domain = new Dictionary<string, object>();
             
             domain.Add("isSingleZipFile", "1");
@@ -273,7 +309,7 @@ namespace IqaController.service
          */
         public static SaveResultInfo insertZipfileInfos(List<FileProcess> dbInsertList)
         {
-            string uri = Define.CON_WEB_SERVICE + "manage/insertZipFileInfos.do";
+            string uri = "manage/insertZipFileInfos.do";
 
             Dictionary<string, Object> domain = new Dictionary<string, object>();
             List<Dictionary<string, Object>> lstDomain = new List <Dictionary<string, Object>>();
@@ -299,7 +335,7 @@ namespace IqaController.service
             }
             return res;
         }
-
+        /*
         public static ControllerServerEntity getFreeFtpServerInfo()
         {
             
@@ -322,11 +358,11 @@ namespace IqaController.service
             return freeServerInfo;
             
         }
-
+        */
         public static CommonResultEntity getControllerFilePeriod(bool bWait)
         {
             
-            string uri = Define.CON_WEB_SERVICE + "manage/getControllerFilePeriod.do";
+            string uri =  "manage/getControllerFilePeriod.do";
             Dictionary<string, Object> domain = new Dictionary<string, object>();
             String jsonResult = iqaService.sendService(domain, uri, bWait);
 
@@ -358,7 +394,7 @@ namespace IqaController.service
         public static CommonResultEntity getControllerServer()
         {
            
-            string uri = Define.CON_WEB_SERVICE + "manage/getControllerServer.do";
+            string uri =  "manage/getControllerServer.do";
             Dictionary<string, Object> domain = new Dictionary<string, object>();
             String jsonResult = iqaService.sendService(domain, uri);
 

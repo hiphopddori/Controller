@@ -64,6 +64,23 @@ namespace IqaController
             }
         }
 
+        public static Boolean ParseDate(string sFileDate , ref DateTime date)
+        {
+            Boolean bSuccess = false;
+
+            try{
+                date = DateTime.ParseExact(sFileDate, "yyyyMMdd", null);
+                bSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                bSuccess = false;
+            }
+
+            return bSuccess;
+
+        }
 
         public static void SetIniWriteString(string section, string key, string val, string filePath)
         {
@@ -112,21 +129,28 @@ namespace IqaController
                 return false;
             }
         }
-
+        //취소 되는경우 발생하는듯 함
         public static Boolean Wait2FileAccessible(string fullPath,int maxMin)
         {
             while (true)
             {
                 try
                 {
+                    
                     //복사중일경우 Exception 발생한다.
                     using (var file = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read))
                     {
                         break;
                     }
                 }
-                catch (IOException)
+                catch (IOException ex)
                 {
+                    //파일을 찾을수 없을경우 즉 FTP전송되다 취소될경우 
+                    if (ex.HResult ==  -2147024894)
+                    {
+                        return false;
+                    }
+
                     Thread.Sleep(1000);
                 }
             }
@@ -134,7 +158,7 @@ namespace IqaController
             //추후 maxMin 처리하자
             return true;
         }
-
+        
         public static long CalculateDirectorySize(DirectoryInfo directory, bool includeSubdirectories)
         {
             long totalSize = 0;

@@ -14,9 +14,11 @@ namespace IqaController.entity
 
 #if DEBUG
         public const string CON_WEB_SERVICE = "http://localhost:8080/IQA/";
+        public const string CON_WEB_SERVICE2 = "http://localhost:8080/IQA/";
         public const string CON_ZIP_EXE_PATH = @"C:\Program Files (x86)\7-Zip\";
 #else
         public const string CON_WEB_SERVICE = "http://90.90.30.193:8080/IQA/";
+        public const string CON_WEB_SERVICE2 = "http://90.90.30.204:8080/IQA/";
         public const string CON_ZIP_EXE_PATH = @"C:\Program Files\7-Zip\";
 #endif
 
@@ -72,10 +74,14 @@ namespace IqaController.entity
         public const string con_STATE_ERR_NAMING = "E_NM";
         public const string con_STATE_ERR_UNZIP = "E_UZ";
         public const string con_STATE_ERR_CONV = "E_CONV";
+        public const string con_STATE_ERR_FTP = "E_FTP";
         public const string con_STATE_ERR_DUP_DRM = "E_DD";     //DRP 중복
         public const string con_STATE_ERR_DUP_ZIP = "E_DZ";     //ZIP파일 중복
-
+        
+        
         public const string con_STATE_ERR_DUP_ALL = "E_DD_ALL"; //DRM 모든파일 중복 DRM
+        public const string con_STATE_ERR_ZERO_QMS = "E_ZERO_QMS"; //컨버터 실행후 QMS파일 미생성된 오류 
+        public const string con_STATE_ERR_ZERO_DRM = "E_ZERO_DRM"; //압축해제후 DRM 파일 미존재
 
 
         public const string con_FOLDER_UPLOAD_ERROR = "UPLOAD_ERROR";
