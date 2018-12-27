@@ -31,6 +31,7 @@ namespace IqaController.entity
         public const string CON_MSG_WAIT = "대기";
         public const string CON_MSG_ING = "진행중";
         public const string CON_MSG_ERROR = "Error";
+        public const string CON_MSG_CANCEL = "취소";
 
         //진행단계
         //public const string con_ING_START = "START";
@@ -70,6 +71,7 @@ namespace IqaController.entity
         public const string con_STATE_COMPLETE_UNZIP = "UZ";    //UNZIP 완료
         public const string con_STATE_COMPLETE_CONV = "CONV";   //CONVERTOR 완료
         public const string con_STATE_COMPLETE_FTP = "FTP";   //FTP 완료
+        public const string con_STATE_CANCEL = "CANCEL";     //중간 취소
 
         public const string con_STATE_ERR_NAMING = "E_NM";
         public const string con_STATE_ERR_UNZIP = "E_UZ";
@@ -82,6 +84,9 @@ namespace IqaController.entity
         public const string con_STATE_ERR_DUP_ALL = "E_DD_ALL"; //DRM 모든파일 중복 DRM
         public const string con_STATE_ERR_ZERO_QMS = "E_ZERO_QMS"; //컨버터 실행후 QMS파일 미생성된 오류 
         public const string con_STATE_ERR_ZERO_DRM = "E_ZERO_DRM"; //압축해제후 DRM 파일 미존재
+        public const string con_STATE_ERR_NO_FILE = "E_NO_FILE";   //Zip파일 존재 하지 않음(원격 DRM 전송중 최소되는 경우)
+
+        
 
 
         public const string con_FOLDER_UPLOAD_ERROR = "UPLOAD_ERROR";

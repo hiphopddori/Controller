@@ -79,6 +79,7 @@ namespace IqaController
          * 1.0.4 : 2018-12-13 : 화면 및 zipfile key값 orgZipfileName -> zipfileName로 변경  FTP04같은경우 분단위로 같은 파일을 보내서 꼬일경우 발생 ㅠㅠ
          * 1.0.5 : 2018-12-17 : DB 컬럼 UPLOAD_DATE MAIN 과 DETAIL 동일하게 처리요청
          * 1.0.6 : 2018-12-21 : 컨버터 비정상에 인한 파일 복사시 문제 버그 수정
+         * 1.0.7 : 2018-12-26 : 취소기능 추가(아직 미배포됨) - 서버 작업 완료되면 배포예정
         */
 
         delegate void TimerEventFiredDelegate();
@@ -176,14 +177,12 @@ namespace IqaController
             }
             */
 
-            if (util.Wait2FileAccessible(@"D:\FTP16\WORK\본사_도로2조_LTED_SKT_L5_고양시 일산동구_20181115_20181207134958.zip", 9999))
-            {
-                MessageBox.Show("존재");
-            }
-            else
-            {
-                MessageBox.Show("존재");
-            }
+            //FileProcess row = GetFilePath2FileProcessInfo(@"D:\FTP16\WORK\강북본부_도로407조_LTEV_SKT_AUTO_롯데_20181205.zip");
+            //DeleteWorkZipFile(@"D:\FTP16\WORK\강북본부_도로407조_LTEV_SKT_AUTO_롯데_20181205");
+
+            Boolean bAccessible = util.Wait2FileAccessible(@"D:\FTP16\WORK\본사_도로2조_CSFB_SKT_AUTO_청주시서원십_20180829.zip", 9999);
+
+
         }
 
         private void frmMain_Load(object sender, EventArgs e)
@@ -196,6 +195,7 @@ namespace IqaController
             iqaService.mainForm = this;
             //TestProc();
             //return;
+
 #if DEBUG
             m_debug = true;
 #else
@@ -867,9 +867,7 @@ namespace IqaController
                 dgvErrorFile.Rows[nRow].Cells[Define.con_KEY_PROCESSERROR_COLIDX].Value = row.ZipFileName;
 
             }));
-
         }
-
         /*
          *  drm파일 
         */
@@ -1793,7 +1791,7 @@ namespace IqaController
             return oriFiles.ToArray();
         }
 
-        private Boolean ZipfileCancelCheckProc(FileProcess row)
+        private Boolean ZipfileCancelCheckProc(FileProcess row , string delFlag)
         {
 
             string isCancel = iqaService.IsZipfileCancel(row);
@@ -1801,35 +1799,31 @@ namespace IqaController
             {
                 return false;
             }
+            string delPath = "";
+            if (delFlag == "all")
+            {
+                delPath = row.ZipfileFullPath;
+            }
+            else if (delFlag == "zip")
+            {
+                delPath = row.ZipFileFullFileName;
+            }
 
-            //DeleteWorkZipFile(extractDir);
+            row.Pass = true;
+            row.CurState = Define.con_STATE_CANCEL;
+            SetLog(row, "INFO", "작업 취소");
+
+            DeleteWorkZipFile(delPath);
 
             return true;
-
-
         }
 
         /* Zip 파일 분석 처리 프로세스
-        */
-        //private void ZipfileParsing(string fileName)
+        */        
         private void ZipfileParsing(FileProcess row)
-        {
-            //string sServiceType = "";
+        {           
             string tmpZipfilePath = "";
-            string path = GetDefaultFtpPath();                        
-            
-            //string onlyFileName = Path.GetFileName(fileName);         
-            //string withoutExtensionName = Path.GetFileNameWithoutExtension(fileName);            
-            //처리 완료또는 패스할 조건일경우
-            /*
-            if (m_dicFileProcess.ContainsKey(onlyFileName))
-            {
-                if (m_dicFileProcess[onlyFileName].Pass || m_dicFileProcess[onlyFileName].Complete) return;                
-            }
-            */
-
-            //FileProcess row = m_dicFileProcess[onlyFileName];
-
+            string path = GetDefaultFtpPath();                                   
             string withoutExtensionZipFileName = Path.GetFileNameWithoutExtension(row.ZipFileName);
 
             row.CurState = Define.con_STATE_WORK;
@@ -1838,10 +1832,21 @@ namespace IqaController
             try
             {
                 //Log 그리드 초기화
+                /*
                 this.Invoke(new Action(delegate ()
                 {
                     dgvProcessLog.RowCount = 0;
                 }));
+                */
+
+                if (m_QueueZipfileParsing_2.Count <= 0 && m_QueueZipfileParsing.Count <=0)
+                {
+                    //로그 그리드 초기화
+                    this.Invoke(new Action(delegate ()
+                    {
+                        dgvProcessLog.Rows.Clear();
+                    }));
+                }
 
                 SetLog(row, "INFO", "#####작업 처리 시작#####");
 
@@ -1851,9 +1856,10 @@ namespace IqaController
                 if (!file.Exists)
                 {
                     row.Pass = true;
-                    row.BackupFlag = "Zip파일 중간 취소됨";
-                    row.CurState = "E_DRM_FTP_CANCEL";
+                    row.BackupFlag = "Zip 파일 미존재";                    
+                    row.CurState = Define.con_STATE_ERR_NO_FILE;
                     SetLog(row, "ERR", "해당파일 존재 하지 않음-중간 취소됨");
+                    UpdateRowFileProcess(row);
                     iqaService.updateZipfileMainInfo(row, "");
                     return;
                 }
@@ -1892,7 +1898,14 @@ namespace IqaController
                 row.BackupFlag = Define.CON_MSG_COMPLETE;
                 //<END>
 
-                //ZipfileCancelCheckProc 작업 취소 체크
+                /*
+                if (ZipfileCancelCheckProc(row, "zip"))
+                {
+                    row.FileNameRule = Define.CON_MSG_CANCEL;
+                    UpdateRowFileProcess(row);
+                    return;
+                }
+                */
 
                 //<START> ########### 파일명 규칙 분석#######################
                 iqaService.updateZipfileMainInfo(row, Define.con_STATE_START_NAMING);                
@@ -1918,9 +1931,6 @@ namespace IqaController
                     }
 
                     util.FileSave("move", sWorkFileFullName, sMoveFileFullName);
-
-                    //move라 삭제할 필요 없음
-                    //DeleteWorkZipFile(row.ZipfileFullPath);
                     row.ZipfileFullPath = sMoveDir;
 
                     UpdateRowErrorFile(row);
@@ -1933,8 +1943,14 @@ namespace IqaController
                 SetLog(row, "INFO", "파일명 규칙 완료");
                 //<END>
 
-
-                //ZipfileCancelCheckProc 작업 취소 체크
+                /*
+                if (ZipfileCancelCheckProc(row, "zip"))
+                {
+                    row.ExtractFlag = Define.CON_MSG_CANCEL;
+                    UpdateRowFileProcess(row);
+                    return;
+                }
+                */
 
                 //<START> ############# 압축 해제 처리 ######################
                 SetLog(row, "INFO", "압축해제");
@@ -1995,105 +2011,7 @@ namespace IqaController
                 Thread.Sleep(2000);
 
                 AddLogFile(row, "INFO", "Que Dequeue2 Enqueue(등록)");
-                m_QueueZipfileParsing_2.Enqueue(row);
-                /*
-                //<START> - 컨버터 실행
-                string sConvertorEndFileName = ConvertorRunProc(row, extractDir);
-                if (sConvertorEndFileName.Length <= 0)
-                {                    
-                    row.Pass = true;                                        
-                    Err2FileMoveConversion(row);                    
-                    UpdateRowErrorFile(row);
-                    DeleteWorkZipFile(extractDir);
-                    return;
-                }                
-                //#############################################</END>
-                
-                if (sConvertorEndFileName.Length > 0 )
-                {
-                    if (!ConvertResultProc(row, sConvertorEndFileName))
-                    {
-                        row.Pass = true;
-                        return;
-                    }
-
-                    SetLog(row, "INFO", "FTP 파일전송");
-                    //ControllerServerEntity freeFtpServer = iqaService.getFreeFtpServerInfo();
-                    ControllerServerEntity freeFtpServer = m_dicFtpInfo[Define.con_FTP_QMS];
-                    if (freeFtpServer == null)
-                    {                        
-                        row.Pass = true;
-                        row.FtpSuccessFlag = Define.con_FAIL;                        
-                        SetLog(row, "WARN", "FTP 서버 정보 가져오기 실패");                        
-                        Err2FileMoveFtpError(row);
-                        UpdateRowErrorFile(row);
-                        DeleteWorkZipFile(extractDir);
-                        return;
-                    }
-                    Boolean bFtpSuccess = false;
-                    //FTP 전송 (모듈이 나뉘고 있어서 상용도 SFTP로 요청하자)
-
-                    string[] qmsFiles = Directory.GetFiles(extractDir, "*.qms");
-
-                    if (qmsFiles.Length > 0)
-                    {
-                        row.FtpSendFlag = Define.CON_MSG_ING;
-                        UpdateRowFileProcess(row);
-
-
-                        iqaService.updateZipfileMainInfo(row, Define.con_STATE_START_FTP);
-
-                        if (m_debug)
-                        {
-                            bFtpSuccess = SendSFtp(row, freeFtpServer, extractDir, false);
-                        }
-                        else
-                        {
-                            bFtpSuccess = SendFtp(row, freeFtpServer, extractDir, false);
-                        }
-
-                        if (!bFtpSuccess)
-                        {
-                            row.Pass = true;
-                            row.FtpSendFlag = Define.CON_MSG_ERROR;
-                            row.CurState = Define.con_STATE_ERR_FTP;
-                            Err2FileMoveFtpError(row);
-                            SetLog(row, "INFO", "파일정송 실패");
-                        }
-                        else
-                        {                            
-                            row.CurState = Define.con_STATE_COMPLETE_FTP;
-                            row.FtpSendFlag = Define.CON_MSG_COMPLETE;
-                            SetLog(row, "INFO", "파일정송 완료");
-                        }                        
-                    }
-                    else
-                    {                        
-                        row.CurState = Define.con_STATE_ERR_ZERO_QMS;
-                        SetLog(row, "INFO", "QMS 파일 미존재");
-                    }                                       
-                }
-                //정상 처리 로그 남긴다.                        1                                
-                SetLog(row, "INFO", "#####작업 처리 완료#####");
-                UpdateRowFileProcess(row);
-                //row.CurState = Define.con_STATE_WORK_COMPLETE;      //기현선임 작업이 있어 서버와 협의 필요 서버에서 완료가되야 완료임
-                //ZIp파일 완료 DB Update
-
-                iqaService.updateZipFileAllInfo(row);
-
-                //FTP 전송 실패한 qms파일을 백업이동한다. - 위에서 처리 하고 있음
-                
-                //worK 작업 파일 관련 삭제 처리
-                if (DeleteWorkZipFile(extractDir))
-                {                    
-                    SetLog(row, "INFO", "작업파일 삭제 완료");
-                }
-                else
-                {                 
-                    SetLog(row, "INFO", "작업파일 삭제 실패");
-                }
-                row.Complete = true;
-                */
+                m_QueueZipfileParsing_2.Enqueue(row);             
             }
             catch (Exception ex)
             {
@@ -2131,19 +2049,25 @@ namespace IqaController
             
             try
             {
+                /*
                 //Log 그리드 초기화
                 this.Invoke(new Action(delegate ()
                 {
-                    //dgvProcessLog.RowCount = 0;
+                    dgvProcessLog.RowCount = 0;
                 }));
-
+                */
                 //<START> - 컨버터 실행
 
-
-                //ZipfileCancelCheckProc 작업 취소 체크
-
                 string extractDir = getUnzipPath(row);
-                
+                /*
+                if (ZipfileCancelCheckProc(row, "all"))
+                {
+                    row.ConversionFlag = Define.CON_MSG_CANCEL;
+                    UpdateRowFileProcess(row);
+                    return;
+                }
+                */
+
                 string sConvertorEndFileName = ConvertorRunProc(row, extractDir);
                 if (sConvertorEndFileName.Length <= 0)
                 {
@@ -2164,7 +2088,14 @@ namespace IqaController
                         return;
                     }
 
-                    //ZipfileCancelCheckProc 작업 취소 체크
+                    /*
+                    if (ZipfileCancelCheckProc(row, "all"))
+                    {
+                       row.FtpSendFlag = Define.CON_MSG_CANCEL;
+                       UpdateRowFileProcess(row);
+                       return;
+                    }
+                    */
 
                     SetLog(row, "INFO", "FTP 파일전송");
                     //ControllerServerEntity freeFtpServer = iqaService.getFreeFtpServerInfo();
@@ -2249,22 +2180,41 @@ namespace IqaController
 
             try
             {
-               
-                DirectoryInfo di = new DirectoryInfo(dirPath);
-
-                if (di.Exists)
+                if (dirPath.Length <= 0)
                 {
-                    di.Delete(true);
+                    return true;
                 }
-                
-                
 
-                FileInfo file = new FileInfo(dirPath + ".zip");
-
-                if (file.Exists)
+                Boolean bUnzip = true;
+                string ext = Path.GetExtension(dirPath);
+                if (ext == ".zip" || ext == ".ZIP")
                 {
-                    file.Delete();
-                }                
+                    bUnzip = false;
+                }
+
+                if (bUnzip)
+                {
+                    DirectoryInfo di = new DirectoryInfo(dirPath);
+                    if (di.Exists)
+                    {
+                        di.Delete(true);
+                    }
+
+                    FileInfo file = new FileInfo(dirPath + ".zip");
+
+                    if (file.Exists)
+                    {
+                        file.Delete();
+                    }
+                }
+                else
+                {
+                    FileInfo file = new FileInfo(dirPath);
+                    if (file.Exists)
+                    {
+                        file.Delete();
+                    }
+                }
             }
             catch(Exception ex)
             {
@@ -2909,15 +2859,6 @@ namespace IqaController
                     {
                         m_ServiceOnIng = true;  
                         
-                        if (m_QueueZipfileParsing_2.Count <= 0)
-                        {
-                            //로그 그리드 초기화
-                            this.Invoke(new Action(delegate ()
-                            {                                
-                                dgvProcessLog.Rows.Clear();
-                            }));
-                        }
-
                         FileProcess row = m_QueueZipfileParsing.Dequeue();
 
                         //FileProcess row = m_QueueZipfileParsing.Peek();
@@ -3284,7 +3225,7 @@ namespace IqaController
                 string zipFilefullPath = row.ZipfileFullPath + @"\" + row.ZipFileName;
                 SevenZipCall("x -o\"" + extractDir + "\" -r -y \"" + zipFilefullPath + "\"");
 
-                /* .Net Framework 이용 ㅠㅠ FTP서버에서 같은 닷넷버전인데 오류발생에 따른 7zip 이용한다.
+                /*.Net Framework 이용 ㅠㅠ FTP서버에서 같은 닷넷버전인데 오류발생에 따른 7zip 이용한다.
                 string zipPath = row.ZipfileFullPath + "\\" + row.ZipFileName;
                 //string extractPath = @"D:\FTP14\TEST\본사_도로2조_CSFB_SKT_AUTO_청주시서원구_20180829";
                 ZipFile.ExtractToDirectory(zipPath, extractDir);
@@ -3863,8 +3804,7 @@ namespace IqaController
         private Boolean sendSftpEventOrifile(string localPath)
         {
             ControllerServerEntity freeServerInfo = m_dicFtpInfo[Define.con_FTP_DRM];
-            Boolean bSuccess = false;
-
+            
             try
             {                
                 using (var client = new SftpClient(freeServerInfo.Ip, Convert.ToInt32(freeServerInfo.Port), freeServerInfo.Id, freeServerInfo.Password))
