@@ -71,6 +71,7 @@
     <Compile Include="entity\SendFileInfo.cs" />
     <Compile Include="entity\SaveResultInfo.cs" />
     <Compile Include="entity\ZipFileDetailEntity.cs" />
+    <Compile Include="entity\ZipfileInfoEntity.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>

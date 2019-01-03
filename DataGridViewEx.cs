@@ -41,7 +41,16 @@ namespace IqaController
             //tmp.Name = "항목";
             tmp.HeaderText = headerText;
             tmp.Width = width;
-            tmp.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            tmp.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;                        
+            this.Columns.Add(tmp);
+        }
+
+        public void addColumnCheckBox(string headerText,bool selected, int width)
+        {
+            DataGridViewCheckBoxColumn tmp = new DataGridViewCheckBoxColumn();
+            tmp.HeaderText = headerText;
+            tmp.Width = width;
+            //tmp.Selected(true);
             this.Columns.Add(tmp);
         }
 

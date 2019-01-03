@@ -86,6 +86,9 @@ namespace IqaController.entity
         public const string con_STATE_ERR_ZERO_DRM = "E_ZERO_DRM"; //압축해제후 DRM 파일 미존재
         public const string con_STATE_ERR_NO_FILE = "E_NO_FILE";   //Zip파일 존재 하지 않음(원격 DRM 전송중 최소되는 경우)
 
+        public const string con_STATE_ERR_FILE_DENIED = "E_FILE_DENIED";
+        public const string con_STATE_ERR_CONV_ABNORMAL = "E_CONV_ABNORMAL";        //컨버터 비정상 종료 및 멈춤
+
         
 
 

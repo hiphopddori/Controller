@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
-
+using IqaController.entity;
 
 namespace IqaController
 {
@@ -129,8 +129,8 @@ namespace IqaController
                 return false;
             }
         }        
-        public static Boolean Wait2FileAccessible(string fullPath,int maxMin)
-        {
+        public static Boolean Wait2FileAccessible(string fullPath,int maxMin, ref string errFlag)
+        {            
             while (true)
             {
                 try
@@ -143,19 +143,44 @@ namespace IqaController
                 }
                 catch (FileNotFoundException ex)
                 {
-                    //파일을 찾을수 없을경우 즉 FTP전송되다 취소될경우                     
+                    //파일을 찾을수 없을경우 즉 FTP전송되다 취소될경우                         
                     return false;                    
                 }
                 catch (IOException ex)
                 {                                       
                     Thread.Sleep(1000);
-                }               
+                }catch(Exception ex)
+                {
+                    //ACCESS DEnined 발생
+                    errFlag = Define.con_STATE_ERR_FILE_DENIED;
+                    return false;
+                }                
             }
-
-            //추후 maxMin 처리하자
             return true;
         }
-        
+
+        public static Boolean FindDir2File(string dirPath,string findFile , ref string finedFullPath)
+        {
+            Boolean bFind = false;
+
+            string[] filePaths = Directory.GetFiles(dirPath);
+            string tmpFile = "";
+            foreach (string filePath in filePaths)
+            {
+                tmpFile = Path.GetFileName(filePath);
+
+                if (tmpFile == findFile)
+                {
+                    bFind = true;
+                    finedFullPath = filePath;
+                    break;
+                }
+            }
+
+            return bFind;
+        }
+
+
         public static long CalculateDirectorySize(DirectoryInfo directory, bool includeSubdirectories)
         {
             long totalSize = 0;

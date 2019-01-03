@@ -47,6 +47,7 @@ namespace IqaController.entity
         private string flagFtpSend = "0";
         private int ftpSendSuccessCnt = 0;
         private int ftpSendFileCnt = 0;
+        private string errFlagFileAccess = "";
 
         
 
@@ -96,6 +97,7 @@ namespace IqaController.entity
         public string OrgZipFIleFullName { get => this.zipfileFullPath + "\\" + this.orgZipFileName; }          //Path+orgZipFileName
         public string ZipFileFullFileName { get => this.zipfileFullPath + "\\" + this.zipFileName; }            //Path+zipFileName        
         public string UploadDate { get => uploadDate; set => uploadDate = value; }
+        public string ErrFlagFileAccess { get => errFlagFileAccess; set => errFlagFileAccess = value; }
 
         public ZipFileDetailEntity findZipfileDetail(string flag , string key)
         {
@@ -136,8 +138,6 @@ namespace IqaController.entity
         {
             return this.zipfileFullPath + "\\" + this.zipFileName;
         }
-
-        
 
         public string GetErr2MovFileDirPath(string path, string dirFlag)
         {
