@@ -61,7 +61,7 @@
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.picLoading);
             this.Name = "ucLoadingBar";
-            this.Size = new System.Drawing.Size(335, 41);
+            this.Size = new System.Drawing.Size(331, 41);
             ((System.ComponentModel.ISupportInitialize)(this.picLoading)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

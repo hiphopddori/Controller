@@ -9,11 +9,13 @@ namespace IqaController
 {
     class DataGridViewEx : DataGridView
     {
-
         public DataGridViewEx()
         {
             this.AllowUserToAddRows = false;
             this.RowCount = 0;
+            this.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            this.ColumnHeadersHeight = 23;
+            this.ReadOnly = true;
         }
 
         /* 해당 cell을 기본 Text 형식으로 설정한다.

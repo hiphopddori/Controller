@@ -82,7 +82,9 @@ namespace IqaController
          * 1.0.7 : 2018-12-26 : 취소기능 추가 - 서버 작업 완료되면 배포예정
                    2018-12-28 : zip 파일 Access Denied 발생(파일 자체를 제어할수 없음) 따라 해당 로그테이블에 이력 남기기 기능 추가 이전버전은 예외발생함에 따라 멈춤 발생
                    2019-01-02 : 비정상 종료 처리에 따른 수동 처리 자동화 기능 추가(DB 삭제후 해당 Zip파일 찾아서(backup , FTP루트폴더,WORK 폴더) FTP 루트 폴더로 옮기기 및 DB처리)
-                   2019-01-03 : Event DRM 정보 처리시 그시점에 가져오는 방식으로 변경처리(기존은 컨트롤로 로딩시 한번 가져온다.)                   
+                   2019-01-03 : Event DRM 정보 처리시 그시점에 가져오는 방식으로 변경처리(기존은 컨트롤로 로딩시 한번 가져온다.) 
+
+         ZipfileBackupProc : 추후 안정화 되면 BACKUP 처리 젤 마지막에 처리하자
         */
 
         delegate void TimerEventFiredDelegate();
@@ -185,26 +187,24 @@ namespace IqaController
 
             //Boolean bAccessible = util.Wait2FileAccessible(@"D:\FTP16\WORK\본사_도로2조_LTED_SKT_L5_고양시 일산동구_20181115_20181207134958.zip", 9999);
 
-            CommonResultEntity resServer = iqaService.getControllerServer(false);
 
-            if (resServer.Flag == Define.con_FAIL)
+            string zipFileName = "강북본부_도로407조_LTEV_SKT_AUTO_롯데_20181201_20181205132239.zip";
+            string[] arFileInfo = zipFileName.Split('_');
+            var fileWorkDate = arFileInfo[arFileInfo.Length - 1];
+            fileWorkDate = Path.GetFileNameWithoutExtension(fileWorkDate);
+            fileWorkDate = fileWorkDate = fileWorkDate.Substring(0, 8);
+
+            DateTime dtFileWirkDate = new DateTime();
+            Boolean isDate = util.ParseDate(fileWorkDate, ref dtFileWirkDate);
+
+            if (!isDate)
             {
-                util.Log("ERR:eventOrifileSendProc", "이벤트 DRM FTP 서버 정보 가져오기 실패");
-                return;
+                Console.WriteLine("1");
             }
-
-            m_lstServer = (List<ControllerServerEntity>)resServer.Result;
-
-            //ControllerServerEntity freeFtpServer = m_dicFtpInfo[Define.con_FTP_DRM];            
-            ControllerServerEntity freeFtpServer = m_lstServer[0];
-
-            if (freeFtpServer == null)
+            else
             {
-                util.LogDrm("ERR:eventOrifileSendProc", "이벤트 DRM FTP 서버 정보 가져오기 실패");
-                return;
+                Console.WriteLine("0");
             }
-
-
         }
 
         private void frmMain_Load(object sender, EventArgs e)
@@ -232,18 +232,18 @@ namespace IqaController
                 return;
             }
 
-            setControl();
+            SetControl();
             UpdateRowEnv();
 
             //findDirErrorInfo(Define.con_DIR_ZIPDUP);      zip파일 중복체크 안하기로 함
-            findDirErrorInfo(Define.con_DIR_NAMING);
-            findDirErrorInfo(Define.con_DIR_UPLOAD);
-            findDirErrorInfo(Define.con_DIR_CONVERT);
+            FindDirErrorInfo(Define.con_DIR_NAMING);
+            FindDirErrorInfo(Define.con_DIR_UPLOAD);
+            FindDirErrorInfo(Define.con_DIR_CONVERT);
 
             CreateFolderWatching();
 
             m_bServiceOnOffButton = false;
-            serviceOnOff();
+            ServiceOnOff();
 
         }
 
@@ -339,7 +339,7 @@ namespace IqaController
 
         /* 이벤트 DRM 파일 요청건 FTP 전송 및 DB 처리         
         */
-        private void eventOrifileSendProc()
+        private void EventOrifileSendProc()
         {
             //그떄그떄 가져온다.
             CommonResultEntity resServer = iqaService.getControllerServer(true);
@@ -847,7 +847,7 @@ namespace IqaController
         }
         /* 디렉토리 탐색후 Error 파일정보를 가져온다.
          */
-        private void findDirErrorInfo(string flagErr)
+        private void FindDirErrorInfo(string flagErr)
         {
             string defaultPath = GetDefaultFtpPath();
 
@@ -1140,10 +1140,10 @@ namespace IqaController
             //Application.DoEvents();
 
         }
-        /* 파일 이동할 이름을 얻는다.
+        /* 원본 zip파일명 + sysdate
          * 
         * */
-        private string GetMoveFileName(string orgFileName)
+        private string GetZipfileNameAddSysdate(string orgFileName)
         {
 
             string onlyFileName = Path.GetFileNameWithoutExtension(orgFileName);
@@ -1152,38 +1152,14 @@ namespace IqaController
             onlyFileName = onlyFileName + Path.GetExtension(orgFileName);
             return onlyFileName;
         }
-
-        private void setData()
-        {
-          
-            string[] row = new string[] {"","1"};
-            dgvEnv.Rows.Add(row);
-            row = new string[] { "","2" };
-            dgvEnv.Rows.Add(row);
-            row = new string[] { "", "3"};
-            dgvEnv.Rows.Add(row);
-            row = new string[] { "", "4"};
-            dgvEnv.Rows.Add(row);
-            //dgvEnv[1, 1].Value = "tes";
-
-            // 동적 값 변경 처리
-            foreach (DataGridViewRow r in dgvEnv.Rows)
-            {
-                r.Cells[0] = new DataGridViewButtonCell();
-                ((DataGridViewButtonCell)r.Cells[0]).Value = " ";
-
-                //r.Cells[0] = new DataGridViewTextBoxCell();
-                //((DataGridViewTextBoxCell)r.Cells[0]).Value = "Confirm";
-            }
-        }
-
+       
         private string GetFtpName(string serverIdx)
         {
             return String.Format("FTP{0:00}", Convert.ToInt32(serverIdx)); 
         }
 
         
-        private string getDir2FtpName()
+        private string GetDir2FtpName()
         {
             string[] dirNames = Directory.GetDirectories(@"D:\");
             string dirFtpName = "";
@@ -1199,7 +1175,7 @@ namespace IqaController
             return dirFtpName;
         }
         
-        private void setControlComboFtpServer()
+        private void SetControlComboFtpServer()
         {
             //FTP Combo Setting
             string[] ftpServers = new string[16];
@@ -1213,7 +1189,7 @@ namespace IqaController
             if (iniSelFtp.Length <= 0)
             {
                 //D:\디렉토리에서 FTP정보 추출한다.
-                iniSelFtp = getDir2FtpName();
+                iniSelFtp = GetDir2FtpName();
                 if (iniSelFtp.Length <= 0)
                 {
                     iniSelFtp = GetFtpName(m_ftpId);
@@ -1243,7 +1219,7 @@ namespace IqaController
             }
         }
 
-        private void setControl()
+        private void SetControl()
         {
             /* column percent example
                https://nickstips.wordpress.com/2010/11/10/c-listview-dynamically-sizing-columns-to-fill-whole-control/
@@ -1257,7 +1233,7 @@ namespace IqaController
             //tmrServiceBtn = new System.Threading.Timer(tmr_ServiceBtnBlink2);
             StartTmrServiceBtn();
 
-            setControlComboFtpServer();
+            SetControlComboFtpServer();
 
             dgvProcess.addColumnButton("위치", "파일", 60);
             dgvProcess.addColumn("처리서버", 60);
@@ -1953,7 +1929,8 @@ namespace IqaController
                 row.FileSize = fInfo.Length.ToString();
                 SetLog(row, "INFO", "작업폴더 파일이동 완료");
 
-                //<START> ############# 파일 백업 및 작업 디렉토리로 이동                
+                //<START> ############# 파일 백업 및 작업 디렉토리로 이동  
+                //추후 안정화 되면 백업 최후단계에서 move 하자 
                 row.BackupFlag = Define.CON_MSG_ING;
                 UpdateRowFileProcess(row);
                 SetLog(row, "INFO", "백업");
@@ -2215,6 +2192,7 @@ namespace IqaController
 
                 UpdateRowFileProcess(row);
 
+                //안정화 되면 이단계에서 BACKUP 폴더로 MOVE 시키자
 
                 //worK 작업 파일 관련 삭제 처리
                 if (DeleteWorkZipFile(extractDir))
@@ -2235,6 +2213,23 @@ namespace IqaController
                 row.Pass = true;               
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        private Boolean ZipfileBackupProc(FileProcess row)
+        {
+            
+            string defaultPath = GetDefaultFtpPath();
+            string dirPath = row.GetErr2MovFileDirPath(defaultPath, Define.con_DIR_WORK);
+            string sBackupFileFullName = row.GetZipfileFullPathName(defaultPath, Define.con_DIR_BACK);
+            bool bSuccess = util.FileSave("move", row.ZipFileFullFileName, sBackupFileFullName);
+
+            DirectoryInfo di = new DirectoryInfo(dirPath);
+            if (di.Exists)
+            {
+                di.Delete(true);
+            }
+
+            return bSuccess;
         }
 
         private Boolean DeleteWorkZipFile(string dirPath)
@@ -2542,7 +2537,7 @@ namespace IqaController
         }
         */
 
-        private void serviceOnOff()
+        private void ServiceOnOff()
         {
             SetControlServiceBtnOnOff();
             if (m_bServiceOnOffButton)
@@ -2645,15 +2640,19 @@ namespace IqaController
 
             foreach (var key in m_dicFileProcess.Keys.ToList())
             {
-
+                /* 어짜피 로그파일에 다 남는다 삭제 안할 이유가 없음
                 if (!(m_dicFileProcess[key].Complete || m_dicFileProcess[key].Pass))
                 {
                     continue;
                 }
-
-                string zipFileName = m_dicFileProcess[key].ZipFileName;
+                */
+                string zipFileName = m_dicFileProcess[key].ZipFileName;                     
                 string[] arFileInfo = zipFileName.Split('_');
-                var fileWorkDate = arFileInfo[arFileInfo.Length - 1];
+                
+                //zip파일명에서 마지막구분자 시스템 날짜를 추출한다.
+                var fileWorkDate = arFileInfo[arFileInfo.Length - 1];                       
+                fileWorkDate = Path.GetFileNameWithoutExtension(fileWorkDate);
+                fileWorkDate = fileWorkDate = fileWorkDate.Substring(0, 8);
 
                 DateTime dtFileWirkDate = new DateTime();
                 Boolean isDate = util.ParseDate(fileWorkDate, ref dtFileWirkDate);
@@ -2663,7 +2662,6 @@ namespace IqaController
                     continue;
                 }
 
-                fileWorkDate = Path.GetFileNameWithoutExtension(fileWorkDate);
                 DateTime dtCurDate = DateTime.Now;
                 //DateTime dtFileWirkDate = DateTime.ParseExact(fileWorkDate, "yyyyMMddHHmmss", null);
                 dtFileWirkDate = dtFileWirkDate.AddDays(15);
@@ -2731,7 +2729,7 @@ namespace IqaController
         private FileProcess GetFilePath2FileProcessInfo(string fileName)
         {
             string onlyFileName = Path.GetFileName(fileName);
-            string moveFileName = GetMoveFileName(fileName);
+            string moveFileName = GetZipfileNameAddSysdate(fileName);
             string fullPath = Path.GetDirectoryName(fileName);
             //int systemDatePos = moveFileName.LastIndexOf('_');
 
@@ -2888,7 +2886,7 @@ namespace IqaController
                         {
 #if (!DEBUG)
                                 m_ServiceOnIng = true;
-                                eventOrifileSendProc();
+                                EventOrifileSendProc();
                                 SetVariableServiceOnIng();
 
 #endif
@@ -2972,7 +2970,6 @@ namespace IqaController
                 //Thread.Sleep(1000 * 5);  
             }            
         }
-
 
         private void StopFtpFoldWatch()
         {
@@ -4040,8 +4037,8 @@ namespace IqaController
             }
             
             m_bServiceOnOffButton = !m_bServiceOnOffButton;
-            
-            serviceOnOff();
+
+            ServiceOnOff();
         }
 
         private void dgvProcess_Click(object sender, EventArgs e)
