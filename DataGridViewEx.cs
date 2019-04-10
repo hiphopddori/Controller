@@ -42,7 +42,7 @@ namespace IqaController
             DataGridViewTextBoxColumn tmp = new DataGridViewTextBoxColumn();
             //tmp.Name = "항목";
             tmp.HeaderText = headerText;
-            tmp.Width = width;
+            tmp.Width = width;            
             tmp.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;                        
             this.Columns.Add(tmp);
         }

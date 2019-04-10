@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnService = new System.Windows.Forms.Button();
             this.btnConvertorRun = new System.Windows.Forms.Button();
             this.btnConvertorPatch = new System.Windows.Forms.Button();
@@ -37,10 +37,21 @@
             this.btnTerminal = new System.Windows.Forms.Button();
             this.tabMain = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.dgvProcessLog = new IqaController.DataGridViewEx();
+            this.dgvProcess = new IqaController.DataGridViewEx();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.dgvErrorFile = new IqaController.DataGridViewEx();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.dgvEnv = new IqaController.DataGridViewEx();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.dgvDrmFileSend = new IqaController.DataGridViewEx();
             this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.rdbMove = new System.Windows.Forms.RadioButton();
+            this.rdbCopy = new System.Windows.Forms.RadioButton();
+            this.btnZipfileAdd = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtZipfileNm = new System.Windows.Forms.TextBox();
             this.btnConvertorError = new System.Windows.Forms.Button();
             this.btnWorkDirDel = new System.Windows.Forms.Button();
             this.btnAbnormalApply = new System.Windows.Forms.Button();
@@ -49,32 +60,33 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.dtpStartDate = new System.Windows.Forms.DateTimePicker();
+            this.dgvAbnormalZipfile = new IqaController.DataGridViewEx();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.btnWorkQueCOnfirm = new System.Windows.Forms.Button();
             this.cboFtpServer = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.ucLoadingBar = new IqaController.ucLoadingBar();
-            this.dgvProcessLog = new IqaController.DataGridViewEx();
-            this.dgvProcess = new IqaController.DataGridViewEx();
-            this.dgvErrorFile = new IqaController.DataGridViewEx();
-            this.dgvEnv = new IqaController.DataGridViewEx();
-            this.dgvDrmFileSend = new IqaController.DataGridViewEx();
-            this.dgvAbnormalZipfile = new IqaController.DataGridViewEx();
+            this.btnForceWebService = new System.Windows.Forms.Button();
+            this.rdoServer = new System.Windows.Forms.RadioButton();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.rdoServerWeb1 = new System.Windows.Forms.RadioButton();
             this.tabMain.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
-            this.tabPage3.SuspendLayout();
-            this.tabPage4.SuspendLayout();
-            this.tabPage6.SuspendLayout();
-            this.tabPage5.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProcessLog)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProcess)).BeginInit();
+            this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvErrorFile)).BeginInit();
+            this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEnv)).BeginInit();
+            this.tabPage4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDrmFileSend)).BeginInit();
+            this.tabPage6.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAbnormalZipfile)).BeginInit();
+            this.tabPage5.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnService
@@ -176,6 +188,35 @@
             this.tabPage1.Text = "파일처리현황";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // dgvProcessLog
+            // 
+            this.dgvProcessLog.AllowUserToAddRows = false;
+            this.dgvProcessLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvProcessLog.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvProcessLog.Location = new System.Drawing.Point(6, 322);
+            this.dgvProcessLog.Name = "dgvProcessLog";
+            this.dgvProcessLog.ReadOnly = true;
+            this.dgvProcessLog.RowTemplate.Height = 23;
+            this.dgvProcessLog.Size = new System.Drawing.Size(988, 334);
+            this.dgvProcessLog.TabIndex = 3;
+            // 
+            // dgvProcess
+            // 
+            this.dgvProcess.AllowUserToAddRows = false;
+            this.dgvProcess.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvProcess.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvProcess.Location = new System.Drawing.Point(6, 6);
+            this.dgvProcess.Name = "dgvProcess";
+            this.dgvProcess.ReadOnly = true;
+            this.dgvProcess.RowTemplate.Height = 23;
+            this.dgvProcess.Size = new System.Drawing.Size(988, 310);
+            this.dgvProcess.TabIndex = 2;
+            this.dgvProcess.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvProcess_CellClick);
+            this.dgvProcess.Click += new System.EventHandler(this.dgvProcess_Click);
+            // 
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.dgvErrorFile);
@@ -187,6 +228,19 @@
             this.tabPage2.Text = "Error 파일";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // dgvErrorFile
+            // 
+            this.dgvErrorFile.AllowUserToAddRows = false;
+            this.dgvErrorFile.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvErrorFile.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvErrorFile.Location = new System.Drawing.Point(3, 3);
+            this.dgvErrorFile.Name = "dgvErrorFile";
+            this.dgvErrorFile.ReadOnly = true;
+            this.dgvErrorFile.RowTemplate.Height = 23;
+            this.dgvErrorFile.Size = new System.Drawing.Size(994, 656);
+            this.dgvErrorFile.TabIndex = 0;
+            this.dgvErrorFile.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvErrorFile_CellClick);
+            // 
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.dgvEnv);
@@ -196,6 +250,35 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "환경설정";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // dgvEnv
+            // 
+            this.dgvEnv.AllowUserToAddRows = false;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.Info;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvEnv.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            this.dgvEnv.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvEnv.GridColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.dgvEnv.Location = new System.Drawing.Point(0, 0);
+            this.dgvEnv.Name = "dgvEnv";
+            this.dgvEnv.ReadOnly = true;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvEnv.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            this.dgvEnv.RowTemplate.Height = 23;
+            this.dgvEnv.Size = new System.Drawing.Size(1000, 662);
+            this.dgvEnv.TabIndex = 0;
+            this.dgvEnv.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvEnv_CellClick);
             // 
             // tabPage4
             // 
@@ -207,8 +290,24 @@
             this.tabPage4.Text = "drm 파일전송";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
+            // dgvDrmFileSend
+            // 
+            this.dgvDrmFileSend.AllowUserToAddRows = false;
+            this.dgvDrmFileSend.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvDrmFileSend.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvDrmFileSend.Location = new System.Drawing.Point(0, 0);
+            this.dgvDrmFileSend.Name = "dgvDrmFileSend";
+            this.dgvDrmFileSend.ReadOnly = true;
+            this.dgvDrmFileSend.RowTemplate.Height = 23;
+            this.dgvDrmFileSend.Size = new System.Drawing.Size(1000, 662);
+            this.dgvDrmFileSend.TabIndex = 0;
+            // 
             // tabPage6
             // 
+            this.tabPage6.Controls.Add(this.groupBox2);
+            this.tabPage6.Controls.Add(this.btnZipfileAdd);
+            this.tabPage6.Controls.Add(this.label4);
+            this.tabPage6.Controls.Add(this.txtZipfileNm);
             this.tabPage6.Controls.Add(this.btnConvertorError);
             this.tabPage6.Controls.Add(this.btnWorkDirDel);
             this.tabPage6.Controls.Add(this.btnAbnormalApply);
@@ -225,14 +324,77 @@
             this.tabPage6.Text = "비정상 정지 zip파일 처리";
             this.tabPage6.UseVisualStyleBackColor = true;
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.rdbMove);
+            this.groupBox2.Controls.Add(this.rdbCopy);
+            this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.groupBox2.Location = new System.Drawing.Point(733, 3);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(106, 27);
+            this.groupBox2.TabIndex = 15;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Visible = false;
+            // 
+            // rdbMove
+            // 
+            this.rdbMove.AutoSize = true;
+            this.rdbMove.Location = new System.Drawing.Point(56, 7);
+            this.rdbMove.Name = "rdbMove";
+            this.rdbMove.Size = new System.Drawing.Size(47, 16);
+            this.rdbMove.TabIndex = 16;
+            this.rdbMove.Text = "이동";
+            this.rdbMove.UseVisualStyleBackColor = true;
+            // 
+            // rdbCopy
+            // 
+            this.rdbCopy.AutoSize = true;
+            this.rdbCopy.Checked = true;
+            this.rdbCopy.Location = new System.Drawing.Point(4, 9);
+            this.rdbCopy.Name = "rdbCopy";
+            this.rdbCopy.Size = new System.Drawing.Size(47, 16);
+            this.rdbCopy.TabIndex = 15;
+            this.rdbCopy.TabStop = true;
+            this.rdbCopy.Text = "복사";
+            this.rdbCopy.UseVisualStyleBackColor = true;
+            // 
+            // btnZipfileAdd
+            // 
+            this.btnZipfileAdd.BackColor = System.Drawing.SystemColors.WindowFrame;
+            this.btnZipfileAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnZipfileAdd.ForeColor = System.Drawing.Color.White;
+            this.btnZipfileAdd.Location = new System.Drawing.Point(396, 35);
+            this.btnZipfileAdd.Name = "btnZipfileAdd";
+            this.btnZipfileAdd.Size = new System.Drawing.Size(82, 24);
+            this.btnZipfileAdd.TabIndex = 12;
+            this.btnZipfileAdd.Text = "파일 찾기";
+            this.btnZipfileAdd.UseVisualStyleBackColor = false;
+            this.btnZipfileAdd.Click += new System.EventHandler(this.btnZipfileAdd_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(4, 39);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(62, 12);
+            this.label4.TabIndex = 11;
+            this.label4.Text = "zip 파일명";
+            // 
+            // txtZipfileNm
+            // 
+            this.txtZipfileNm.Location = new System.Drawing.Point(67, 36);
+            this.txtZipfileNm.Name = "txtZipfileNm";
+            this.txtZipfileNm.Size = new System.Drawing.Size(324, 21);
+            this.txtZipfileNm.TabIndex = 10;
+            // 
             // btnConvertorError
             // 
             this.btnConvertorError.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.btnConvertorError.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnConvertorError.ForeColor = System.Drawing.Color.White;
-            this.btnConvertorError.Location = new System.Drawing.Point(639, 10);
+            this.btnConvertorError.Location = new System.Drawing.Point(723, 36);
             this.btnConvertorError.Name = "btnConvertorError";
-            this.btnConvertorError.Size = new System.Drawing.Size(105, 23);
+            this.btnConvertorError.Size = new System.Drawing.Size(110, 23);
             this.btnConvertorError.TabIndex = 9;
             this.btnConvertorError.Text = "컨버터 오류 처리";
             this.btnConvertorError.UseVisualStyleBackColor = false;
@@ -243,7 +405,7 @@
             this.btnWorkDirDel.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.btnWorkDirDel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnWorkDirDel.ForeColor = System.Drawing.Color.White;
-            this.btnWorkDirDel.Location = new System.Drawing.Point(873, 10);
+            this.btnWorkDirDel.Location = new System.Drawing.Point(873, 9);
             this.btnWorkDirDel.Name = "btnWorkDirDel";
             this.btnWorkDirDel.Size = new System.Drawing.Size(118, 23);
             this.btnWorkDirDel.TabIndex = 8;
@@ -256,7 +418,7 @@
             this.btnAbnormalApply.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.btnAbnormalApply.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAbnormalApply.ForeColor = System.Drawing.Color.White;
-            this.btnAbnormalApply.Location = new System.Drawing.Point(482, 10);
+            this.btnAbnormalApply.Location = new System.Drawing.Point(840, 36);
             this.btnAbnormalApply.Name = "btnAbnormalApply";
             this.btnAbnormalApply.Size = new System.Drawing.Size(152, 23);
             this.btnAbnormalApply.TabIndex = 7;
@@ -269,11 +431,11 @@
             this.btnAbnormalSearch.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.btnAbnormalSearch.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAbnormalSearch.ForeColor = System.Drawing.Color.White;
-            this.btnAbnormalSearch.Location = new System.Drawing.Point(401, 10);
+            this.btnAbnormalSearch.Location = new System.Drawing.Point(395, 9);
             this.btnAbnormalSearch.Name = "btnAbnormalSearch";
-            this.btnAbnormalSearch.Size = new System.Drawing.Size(75, 23);
+            this.btnAbnormalSearch.Size = new System.Drawing.Size(83, 23);
             this.btnAbnormalSearch.TabIndex = 6;
-            this.btnAbnormalSearch.Text = "조 회";
+            this.btnAbnormalSearch.Text = "비정상 조 회";
             this.btnAbnormalSearch.UseVisualStyleBackColor = false;
             this.btnAbnormalSearch.Click += new System.EventHandler(this.btnAbnormalSearch_Click);
             // 
@@ -309,8 +471,24 @@
             this.dtpStartDate.Size = new System.Drawing.Size(150, 21);
             this.dtpStartDate.TabIndex = 1;
             // 
+            // dgvAbnormalZipfile
+            // 
+            this.dgvAbnormalZipfile.AllowUserToAddRows = false;
+            this.dgvAbnormalZipfile.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvAbnormalZipfile.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.dgvAbnormalZipfile.Location = new System.Drawing.Point(0, 65);
+            this.dgvAbnormalZipfile.Name = "dgvAbnormalZipfile";
+            this.dgvAbnormalZipfile.ReadOnly = true;
+            this.dgvAbnormalZipfile.RowTemplate.Height = 23;
+            this.dgvAbnormalZipfile.Size = new System.Drawing.Size(1000, 597);
+            this.dgvAbnormalZipfile.TabIndex = 5;
+            this.dgvAbnormalZipfile.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvAbnormalZipfile_CellClick);
+            this.dgvAbnormalZipfile.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvAbnormalZipfile_CellPainting);
+            // 
             // tabPage5
             // 
+            this.tabPage5.Controls.Add(this.groupBox3);
+            this.tabPage5.Controls.Add(this.btnForceWebService);
             this.tabPage5.Controls.Add(this.btnWorkQueCOnfirm);
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
@@ -376,95 +554,48 @@
             this.ucLoadingBar.Size = new System.Drawing.Size(337, 43);
             this.ucLoadingBar.TabIndex = 10;
             // 
-            // dgvProcessLog
+            // btnForceWebService
             // 
-            this.dgvProcessLog.AllowUserToAddRows = false;
-            this.dgvProcessLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgvProcessLog.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvProcessLog.Location = new System.Drawing.Point(6, 322);
-            this.dgvProcessLog.Name = "dgvProcessLog";
-            this.dgvProcessLog.RowTemplate.Height = 23;
-            this.dgvProcessLog.Size = new System.Drawing.Size(988, 334);
-            this.dgvProcessLog.TabIndex = 3;
+            this.btnForceWebService.Location = new System.Drawing.Point(8, 35);
+            this.btnForceWebService.Name = "btnForceWebService";
+            this.btnForceWebService.Size = new System.Drawing.Size(112, 23);
+            this.btnForceWebService.TabIndex = 1;
+            this.btnForceWebService.Text = "RestServer 변경";
+            this.btnForceWebService.UseVisualStyleBackColor = true;
+            this.btnForceWebService.Click += new System.EventHandler(this.btnForceWebService_Click);
             // 
-            // dgvProcess
+            // rdoServer
             // 
-            this.dgvProcess.AllowUserToAddRows = false;
-            this.dgvProcess.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgvProcess.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvProcess.Location = new System.Drawing.Point(6, 6);
-            this.dgvProcess.Name = "dgvProcess";
-            this.dgvProcess.RowTemplate.Height = 23;
-            this.dgvProcess.Size = new System.Drawing.Size(988, 310);
-            this.dgvProcess.TabIndex = 2;
-            this.dgvProcess.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvProcess_CellClick);
-            this.dgvProcess.Click += new System.EventHandler(this.dgvProcess_Click);
+            this.rdoServer.AutoSize = true;
+            this.rdoServer.Checked = true;
+            this.rdoServer.Location = new System.Drawing.Point(6, 11);
+            this.rdoServer.Name = "rdoServer";
+            this.rdoServer.Size = new System.Drawing.Size(75, 16);
+            this.rdoServer.TabIndex = 2;
+            this.rdoServer.TabStop = true;
+            this.rdoServer.Text = "기존 정책";
+            this.rdoServer.UseVisualStyleBackColor = true;
             // 
-            // dgvErrorFile
+            // groupBox3
             // 
-            this.dgvErrorFile.AllowUserToAddRows = false;
-            this.dgvErrorFile.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvErrorFile.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvErrorFile.Location = new System.Drawing.Point(3, 3);
-            this.dgvErrorFile.Name = "dgvErrorFile";
-            this.dgvErrorFile.RowTemplate.Height = 23;
-            this.dgvErrorFile.Size = new System.Drawing.Size(994, 656);
-            this.dgvErrorFile.TabIndex = 0;
-            this.dgvErrorFile.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvErrorFile_CellClick);
+            this.groupBox3.Controls.Add(this.rdoServerWeb1);
+            this.groupBox3.Controls.Add(this.rdoServer);
+            this.groupBox3.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.groupBox3.Location = new System.Drawing.Point(126, 28);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(169, 33);
+            this.groupBox3.TabIndex = 3;
+            this.groupBox3.TabStop = false;
             // 
-            // dgvEnv
+            // rdoServerWeb1
             // 
-            this.dgvEnv.AllowUserToAddRows = false;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.Info;
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvEnv.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
-            this.dgvEnv.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvEnv.GridColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.dgvEnv.Location = new System.Drawing.Point(0, 0);
-            this.dgvEnv.Name = "dgvEnv";
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvEnv.RowHeadersDefaultCellStyle = dataGridViewCellStyle8;
-            this.dgvEnv.RowTemplate.Height = 23;
-            this.dgvEnv.Size = new System.Drawing.Size(1000, 662);
-            this.dgvEnv.TabIndex = 0;
-            this.dgvEnv.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvEnv_CellClick);
-            // 
-            // dgvDrmFileSend
-            // 
-            this.dgvDrmFileSend.AllowUserToAddRows = false;
-            this.dgvDrmFileSend.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvDrmFileSend.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvDrmFileSend.Location = new System.Drawing.Point(0, 0);
-            this.dgvDrmFileSend.Name = "dgvDrmFileSend";
-            this.dgvDrmFileSend.RowTemplate.Height = 23;
-            this.dgvDrmFileSend.Size = new System.Drawing.Size(1000, 662);
-            this.dgvDrmFileSend.TabIndex = 0;
-            // 
-            // dgvAbnormalZipfile
-            // 
-            this.dgvAbnormalZipfile.AllowUserToAddRows = false;
-            this.dgvAbnormalZipfile.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvAbnormalZipfile.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.dgvAbnormalZipfile.Location = new System.Drawing.Point(0, 42);
-            this.dgvAbnormalZipfile.Name = "dgvAbnormalZipfile";
-            this.dgvAbnormalZipfile.RowTemplate.Height = 23;
-            this.dgvAbnormalZipfile.Size = new System.Drawing.Size(1000, 620);
-            this.dgvAbnormalZipfile.TabIndex = 5;
-            this.dgvAbnormalZipfile.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvAbnormalZipfile_CellPainting);
+            this.rdoServerWeb1.AutoSize = true;
+            this.rdoServerWeb1.Location = new System.Drawing.Point(82, 11);
+            this.rdoServerWeb1.Name = "rdoServerWeb1";
+            this.rdoServerWeb1.Size = new System.Drawing.Size(73, 16);
+            this.rdoServerWeb1.TabIndex = 3;
+            this.rdoServerWeb1.Text = "IQA WEB";
+            this.rdoServerWeb1.UseVisualStyleBackColor = true;
             // 
             // frmMain
             // 
@@ -486,20 +617,24 @@
             this.Resize += new System.EventHandler(this.frmMain_Resize);
             this.tabMain.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvProcessLog)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvProcess)).EndInit();
             this.tabPage2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvErrorFile)).EndInit();
             this.tabPage3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvEnv)).EndInit();
             this.tabPage4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvDrmFileSend)).EndInit();
             this.tabPage6.ResumeLayout(false);
             this.tabPage6.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAbnormalZipfile)).EndInit();
             this.tabPage5.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvProcessLog)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvProcess)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvErrorFile)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvEnv)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvDrmFileSend)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvAbnormalZipfile)).EndInit();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -537,6 +672,16 @@
         private System.Windows.Forms.Button btnAbnormalApply;
         private System.Windows.Forms.Button btnWorkDirDel;
         private System.Windows.Forms.Button btnConvertorError;
+        private System.Windows.Forms.Button btnZipfileAdd;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox txtZipfileNm;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.RadioButton rdbMove;
+        private System.Windows.Forms.RadioButton rdbCopy;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.RadioButton rdoServerWeb1;
+        private System.Windows.Forms.RadioButton rdoServer;
+        private System.Windows.Forms.Button btnForceWebService;
     }
 }
 

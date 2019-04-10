@@ -16,6 +16,10 @@ namespace IqaController.service
     {
 
         public static frmMain mainForm = null;
+        private static bool isForceWeb1 = false;
+
+        public static bool IsForceWeb1 { get => isForceWeb1; set => isForceWeb1 = value; }
+
 
         /* 서비스 공통 
         */
@@ -107,6 +111,12 @@ namespace IqaController.service
                 else
                 {
                     fullUrl = Define.CON_WEB_SERVICE2 + url;            //기존 WEB SERVER
+                }
+
+                //무조건 IQA WEB 서비스 호출한다. 강제 처리 했을경우
+                if (isForceWeb1)
+                {
+                    fullUrl = Define.CON_WEB_SERVICE2 + url;           
                 }
 
                 bUrlToggle = !bUrlToggle;
@@ -227,7 +237,7 @@ namespace IqaController.service
             }
             else if (flag == Define.con_STATE_START_CONV)
             {
-                domainZipMain.Add("convStartTime", "Y");                       //업로드 시작 시점 업데이트 - 화면설계상 없어서 사용안함
+                domainZipMain.Add("convStartTime", "Y");                         //컨버터 시작시간
             }
 
             String result = iqaService.sendService(domain, uri);
@@ -235,6 +245,10 @@ namespace IqaController.service
             if (result.IndexOf("NOK") < 0)
             {
                 res = (SaveResultInfo)Newtonsoft.Json.JsonConvert.DeserializeObject(result, typeof(SaveResultInfo));
+                if (res.Flag == 0)                    
+                {
+                    util.Log("[ERR]", "[" + row.ZipFileName + "==>" + res.Desc + "]");
+                }
             }
             else
             {

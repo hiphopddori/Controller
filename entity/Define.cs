@@ -31,6 +31,7 @@ namespace IqaController.entity
         public const string CON_MSG_WAIT = "대기";
         public const string CON_MSG_ING = "진행중";
         public const string CON_MSG_ERROR = "Error";
+        public const string CON_MSG_ERROR_CONV_LEN = "Drm 파일길이 Error";
         public const string CON_MSG_CANCEL = "취소";
 
         //진행단계
@@ -76,6 +77,7 @@ namespace IqaController.entity
         public const string con_STATE_ERR_NAMING = "E_NM";
         public const string con_STATE_ERR_UNZIP = "E_UZ";
         public const string con_STATE_ERR_CONV = "E_CONV";
+        public const string con_STATE_ERR_CONV_LEN = "E_CONV_LEN";
         public const string con_STATE_ERR_FTP = "E_FTP";
         public const string con_STATE_ERR_DUP_DRM = "E_DD";     //DRP 중복
         public const string con_STATE_ERR_DUP_ZIP = "E_DZ";     //ZIP파일 중복
