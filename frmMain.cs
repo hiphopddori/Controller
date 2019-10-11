@@ -212,8 +212,8 @@ namespace IqaController
             else
             {
                 Console.WriteLine("0");
-            }*/
-
+            }
+            */
 
             var zipFileName = "본사_도로2조_LTED_SKT_L5_고양시 일산동구_20181115_20181207134958.zip";
 
@@ -1394,7 +1394,7 @@ namespace IqaController
             string serviceType = row.ServiceType;
             serviceType = serviceType.ToUpper();
 
-            if (!(serviceType == "LTED" || serviceType == "LTEV" || serviceType == "HDV" || serviceType == "HDVML" || serviceType == "CSFB" || serviceType == "CSFBML" || serviceType == "HSDPA"))
+            if (!(serviceType == "LTED" || serviceType == "LTEV" || serviceType == "HDV" || serviceType == "HDVML" || serviceType == "CSFB" || serviceType == "CSFBML" || serviceType == "HSDPA" || serviceType == "5G"))
             {
                 SetLog(row, "WARN", "서비스 유형 오류");
                 return false;
@@ -3523,6 +3523,10 @@ namespace IqaController
                 {
                     nIdx = 1;
                 }
+                else if (serviceType == "5G")
+                {
+                    nIdx = 3;
+                }
             }
 
             execConvertor(nIdx, path);
@@ -3543,7 +3547,10 @@ namespace IqaController
                     break;
                 case 2:            
                     type = "From/Ax`L ";                    
-                    break;                                
+                    break;
+                case 3:
+                    type = "From/Ax`5G ";
+                    break;
             }
 
             if (path.Length > 0)
@@ -3553,7 +3560,7 @@ namespace IqaController
 
             switch (index)
             {
-                case 0:     // Inno LTE Data 컨버터                    
+                case 0: case 3:      // Inno LTE Data 컨버터                    
                     //Exec("D:\\INNOWHB\\QMS-W.exe", type + path + " L_Data.cfg ");
                     Exec("D:\\INNOWHB\\QMS-W.exe", type + "\"" + path + "\"" +" L_Data.cfg ");
                     break;
